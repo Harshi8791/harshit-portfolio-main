@@ -111,7 +111,8 @@ function Home() {
           </div>
 
           <div className="reveal relative" data-reveal data-visible="true">
-            <div className="animate-float card-elevated rounded-xl p-5 font-mono text-[13px] leading-relaxed">
+            <div className="animate-float card-elevated holo-border hud-corners rounded-xl p-5 font-mono text-[13px] leading-relaxed">
+
               <div className="flex gap-1.5 pb-4">
                 <span className="size-2.5 rounded-full bg-destructive/70" />
                 <span className="size-2.5 rounded-full bg-accent/70" />
