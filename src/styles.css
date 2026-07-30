@@ -129,7 +129,7 @@
   color: transparent;
 }
 
-@utility card-elevated holo-border {
+@utility card-elevated {
   background-color: var(--card);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
