@@ -173,7 +173,7 @@ chain.invoke({
           <p className="reveal text-base leading-relaxed text-muted-foreground" data-reveal>
             {profile.objective}
           </p>
-          <div className="reveal card-elevated rounded-xl p-6" data-reveal>
+          <div className="reveal card-elevated holo-border rounded-xl p-6" data-reveal>
             <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Education</h3>
             <ul className="mt-5 space-y-5">
               {education.map((item) => (
@@ -198,7 +198,7 @@ chain.invoke({
           {skillGroups.map((group, i) => (
             <div
               key={group.title}
-              className="reveal card-elevated rounded-xl p-6"
+              className="reveal card-elevated holo-border rounded-xl p-6"
               data-reveal
               style={{ transitionDelay: `${i * 70}ms` }}
             >
@@ -224,7 +224,7 @@ chain.invoke({
           {projects.map((project, i) => (
             <article
               key={project.name}
-              className="reveal card-elevated flex flex-col rounded-xl p-6"
+              className="reveal card-elevated holo-border flex flex-col rounded-xl p-6"
               data-reveal
               style={{ transitionDelay: `${i * 80}ms` }}
             >
@@ -259,7 +259,7 @@ chain.invoke({
           {achievements.map((item, i) => (
             <li
               key={item}
-              className="reveal card-elevated rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
+              className="reveal card-elevated holo-border rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
               data-reveal
               style={{ transitionDelay: `${i * 70}ms` }}
             >

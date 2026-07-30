@@ -63,7 +63,7 @@ function ExperiencePage() {
           {education.map((item, i) => (
             <div
               key={item.degree}
-              className="reveal card-elevated rounded-xl p-6"
+              className="reveal card-elevated holo-border rounded-xl p-6"
               data-reveal
               style={{ transitionDelay: `${i * 70}ms` }}
             >
@@ -80,7 +80,7 @@ function ExperiencePage() {
           {achievements.map((item, i) => (
             <li
               key={item}
-              className="reveal card-elevated rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
+              className="reveal card-elevated holo-border rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
               data-reveal
               style={{ transitionDelay: `${i * 70}ms` }}
             >
