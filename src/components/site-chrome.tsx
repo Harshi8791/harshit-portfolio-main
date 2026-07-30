@@ -22,18 +22,21 @@ export function SiteNav() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors duration-300 ${
-        scrolled ? "border-b border-border bg-background/80 backdrop-blur-xl" : "bg-transparent"
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "glass-panel border-x-0 border-t-0 shadow-[0_10px_40px_-30px_var(--primary)]"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/" className="group flex items-center gap-2.5" onClick={() => setOpen(false)}>
           <span className="animate-pulse-dot size-2.5 rounded-full bg-primary" />
-          <span className="font-display text-sm font-semibold tracking-tight">
+          <span className="neon-text font-display text-sm font-semibold tracking-tight">
             {profile.name.split(" ")[0]}
             <span className="text-muted-foreground">.dev</span>
           </span>
         </Link>
+
 
         <div className="hidden items-center gap-1 md:flex">
           {links.map((link) => (
