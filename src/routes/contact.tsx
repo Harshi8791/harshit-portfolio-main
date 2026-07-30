@@ -45,7 +45,7 @@ function ContactPage() {
             href={channel.href}
             target={channel.href.startsWith("http") ? "_blank" : undefined}
             rel="noreferrer"
-            className="reveal card-elevated group flex items-center justify-between rounded-xl p-7"
+            className="reveal card-elevated holo-border group flex items-center justify-between rounded-xl p-7"
             data-reveal
             style={{ transitionDelay: `${i * 70}ms` }}
           >

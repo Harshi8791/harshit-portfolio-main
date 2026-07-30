@@ -35,7 +35,7 @@ function ProjectsPage() {
         {projects.map((project, i) => (
           <article
             key={project.name}
-            className="reveal card-elevated grid gap-8 rounded-xl p-7 md:grid-cols-[0.9fr_1.1fr] md:p-9"
+            className="reveal card-elevated holo-border grid gap-8 rounded-xl p-7 md:grid-cols-[0.9fr_1.1fr] md:p-9"
             data-reveal
             style={{ transitionDelay: `${i * 80}ms` }}
           >

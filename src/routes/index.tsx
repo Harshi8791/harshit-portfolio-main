@@ -75,17 +75,18 @@ function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="hero-aurora pointer-events-none absolute inset-0" />
-        <div className="surface-grid pointer-events-none absolute inset-0 opacity-40" />
+        <div className="surface-grid animate-grid-pan pointer-events-none absolute inset-0 opacity-40" />
         <div className="relative mx-auto grid max-w-6xl gap-14 px-6 pb-24 pt-20 md:pb-32 md:pt-28 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="reveal" data-reveal data-visible="true">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               <span className="animate-pulse-dot size-1.5 rounded-full bg-primary" />
               Open to ML / AI roles
             </span>
 
             <h1 className="mt-7 text-4xl font-semibold leading-[1.05] sm:text-6xl">
-              <span className="text-gradient">{profile.name}</span>
+              <span className="text-gradient neon-text">{profile.name}</span>
             </h1>
+
             <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
               {profile.role} — <Typewriter />
             </p>
@@ -110,7 +111,8 @@ function Home() {
           </div>
 
           <div className="reveal relative" data-reveal data-visible="true">
-            <div className="animate-float card-elevated rounded-xl p-5 font-mono text-[13px] leading-relaxed">
+            <div className="animate-float card-elevated holo-border hud-corners rounded-xl p-5 font-mono text-[13px] leading-relaxed">
+
               <div className="flex gap-1.5 pb-4">
                 <span className="size-2.5 rounded-full bg-destructive/70" />
                 <span className="size-2.5 rounded-full bg-accent/70" />
@@ -171,7 +173,7 @@ chain.invoke({
           <p className="reveal text-base leading-relaxed text-muted-foreground" data-reveal>
             {profile.objective}
           </p>
-          <div className="reveal card-elevated rounded-xl p-6" data-reveal>
+          <div className="reveal card-elevated holo-border rounded-xl p-6" data-reveal>
             <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Education</h3>
             <ul className="mt-5 space-y-5">
               {education.map((item) => (
@@ -196,7 +198,7 @@ chain.invoke({
           {skillGroups.map((group, i) => (
             <div
               key={group.title}
-              className="reveal card-elevated rounded-xl p-6"
+              className="reveal card-elevated holo-border rounded-xl p-6"
               data-reveal
               style={{ transitionDelay: `${i * 70}ms` }}
             >
@@ -222,7 +224,7 @@ chain.invoke({
           {projects.map((project, i) => (
             <article
               key={project.name}
-              className="reveal card-elevated flex flex-col rounded-xl p-6"
+              className="reveal card-elevated holo-border flex flex-col rounded-xl p-6"
               data-reveal
               style={{ transitionDelay: `${i * 80}ms` }}
             >
@@ -257,7 +259,7 @@ chain.invoke({
           {achievements.map((item, i) => (
             <li
               key={item}
-              className="reveal card-elevated rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
+              className="reveal card-elevated holo-border rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
               data-reveal
               style={{ transitionDelay: `${i * 70}ms` }}
             >
