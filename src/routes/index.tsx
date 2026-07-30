@@ -75,17 +75,18 @@ function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="hero-aurora pointer-events-none absolute inset-0" />
-        <div className="surface-grid pointer-events-none absolute inset-0 opacity-40" />
+        <div className="surface-grid animate-grid-pan pointer-events-none absolute inset-0 opacity-40" />
         <div className="relative mx-auto grid max-w-6xl gap-14 px-6 pb-24 pt-20 md:pb-32 md:pt-28 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="reveal" data-reveal data-visible="true">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               <span className="animate-pulse-dot size-1.5 rounded-full bg-primary" />
               Open to ML / AI roles
             </span>
 
             <h1 className="mt-7 text-4xl font-semibold leading-[1.05] sm:text-6xl">
-              <span className="text-gradient">{profile.name}</span>
+              <span className="text-gradient neon-text">{profile.name}</span>
             </h1>
+
             <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
               {profile.role} — <Typewriter />
             </p>
