@@ -118,7 +118,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
+      <div className="ambient-field" aria-hidden />
+      <div className="beam-sweep" aria-hidden />
+      <div className="scanlines" aria-hidden />
+      <div className="relative flex min-h-screen flex-col">
         <SiteNav />
         <main className="flex-1">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
@@ -127,6 +130,7 @@ function RootComponent() {
         <SiteFooter />
       </div>
     </QueryClientProvider>
+
   );
 }
 
