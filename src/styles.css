@@ -70,7 +70,15 @@
   --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent),
     0 18px 50px -20px color-mix(in oklab, var(--primary) 45%, transparent);
   --shadow-card: 0 20px 45px -30px oklch(0 0 0 / 0.9);
+  --gradient-holo: linear-gradient(
+    120deg,
+    color-mix(in oklab, var(--primary) 70%, transparent),
+    color-mix(in oklab, var(--accent) 70%, transparent) 45%,
+    transparent 70%,
+    color-mix(in oklab, var(--primary) 55%, transparent)
+  );
 }
+
 
 @layer base {
   * {
