@@ -2,16 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Section, Tag } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
-import {
-  achievements,
-  education,
-  marqueeSkills,
-  profile,
-  projects,
-  roleRotation,
-  skillGroups,
-  stats,
-} from "@/lib/portfolio-data";
+import { roleRotation } from "@/lib/portfolio-data";
+import { useContent } from "@/lib/portfolio-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -69,6 +61,8 @@ function Typewriter() {
 
 function Home() {
   useReveal();
+  const { achievements, education, marqueeSkills, profile, projects, skillGroups, stats } =
+    useContent();
 
   return (
     <>

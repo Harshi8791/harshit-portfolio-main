@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Section } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
-import { achievements, education, experience } from "@/lib/portfolio-data";
+import { useContent } from "@/lib/portfolio-store";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({
@@ -24,6 +24,7 @@ export const Route = createFileRoute("/experience")({
 
 function ExperiencePage() {
   useReveal();
+  const { achievements, education, experience } = useContent();
 
   return (
     <>

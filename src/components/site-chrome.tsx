@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { profile } from "@/lib/portfolio-data";
+import { useContent, useContentStore } from "@/lib/portfolio-store";
 
 const links = [
   { to: "/", label: "Home" },
@@ -12,6 +12,8 @@ const links = [
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const profile = useContent().profile;
+  const { openAdmin } = useContentStore();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -29,13 +31,23 @@ export function SiteNav() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link to="/" className="group flex items-center gap-2.5" onClick={() => setOpen(false)}>
+        <button
+          type="button"
+          title="Open admin panel"
+          aria-label="Open admin panel"
+          onClick={() => {
+            setOpen(false);
+            openAdmin();
+          }}
+          className="group flex items-center gap-2.5"
+        >
           <span className="animate-pulse-dot size-2.5 rounded-full bg-primary" />
-          <span className="neon-text font-display text-sm font-semibold tracking-tight">
+          <span className="neon-text font-display text-sm font-semibold tracking-tight transition-colors group-hover:text-primary">
             {profile.name.split(" ")[0]}
             <span className="text-muted-foreground">.dev</span>
           </span>
-        </Link>
+        </button>
+
 
 
         <div className="hidden items-center gap-1 md:flex">
@@ -90,6 +102,8 @@ export function SiteNav() {
 }
 
 export function SiteFooter() {
+  const profile = useContent().profile;
+
   return (
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">

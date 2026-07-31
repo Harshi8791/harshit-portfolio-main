@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Section, Tag } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
-import { projects } from "@/lib/portfolio-data";
+import { useContent } from "@/lib/portfolio-store";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -24,6 +24,7 @@ export const Route = createFileRoute("/projects")({
 
 function ProjectsPage() {
   useReveal();
+  const { projects } = useContent();
 
   return (
     <Section
