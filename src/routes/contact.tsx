@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Section } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
-import { profile } from "@/lib/portfolio-data";
+import { useContent } from "@/lib/portfolio-store";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -22,15 +22,15 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
-const channels = [
-  { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
-  { label: "Phone", value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}` },
-  { label: "GitHub", value: "github.com", href: profile.github },
-  { label: "LinkedIn", value: "linkedin.com", href: profile.linkedin },
-];
-
 function ContactPage() {
   useReveal();
+  const { profile } = useContent();
+  const channels = [
+    { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+    { label: "Phone", value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}` },
+    { label: "GitHub", value: "github.com", href: profile.github },
+    { label: "LinkedIn", value: "linkedin.com", href: profile.linkedin },
+  ];
 
   return (
     <Section
