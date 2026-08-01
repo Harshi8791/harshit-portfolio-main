@@ -101,11 +101,55 @@ function Card({ title, onRemove, children }: { title: string; onRemove: () => vo
 }
 
 /** Comma / newline separated list helpers */
-const toList = (v: string) =>
+const toList = (v: string, sep: string) =>
   v
-    .split(/[\n,]/)
+    .split(sep === "\n" ? /\n/ : /[\n,]/)
     .map((s) => s.trim())
     .filter(Boolean);
+
+/**
+ * List editor that keeps the raw text you type (so commas, trailing spaces and
+ * empty lines survive) and only parses it into an array for the store.
+ */
+function ListField({
+  label,
+  values,
+  onChange,
+  sep = ", ",
+  textarea,
+  placeholder,
+}: {
+  label: string;
+  values: string[];
+  onChange: (list: string[]) => void;
+  sep?: string;
+  textarea?: boolean;
+  placeholder?: string;
+}) {
+  const [draft, setDraft] = useState(() => values.join(sep));
+
+  useEffect(() => {
+    const parsed = toList(draft, sep);
+    if (parsed.length !== values.length || parsed.some((s, i) => s !== values[i])) {
+      setDraft(values.join(sep));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
+
+  return (
+    <Field
+      label={label}
+      textarea={textarea}
+      placeholder={placeholder}
+      value={draft}
+      onChange={(v) => {
+        setDraft(v);
+        onChange(toList(v, sep));
+      }}
+    />
+  );
+}
+
 
 /* ---------- panel ---------- */
 
@@ -269,15 +313,15 @@ export function AdminPanel() {
                           }
                         />
                       </div>
-                      <Field
+                      <ListField
                         label="Skills in this group (comma separated)"
                         textarea
-                        value={g.items.join(", ")}
+                        values={g.items}
                         placeholder="LangChain, RAG, Prompt engineering"
-                        onChange={(v) =>
+                        onChange={(list) =>
                           patch({
                             skillGroups: content.skillGroups.map((x, k) =>
-                              k === i ? { ...x, items: toList(v) } : x,
+                              k === i ? { ...x, items: list } : x,
                             ),
                           })
                         }
@@ -294,11 +338,11 @@ export function AdminPanel() {
                   >
                     + Add skill group
                   </Btn>
-                  <Field
+                  <ListField
                     label="Scrolling banner skills (comma separated)"
                     textarea
-                    value={content.marqueeSkills.join(", ")}
-                    onChange={(v) => patch({ marqueeSkills: toList(v) })}
+                    values={content.marqueeSkills}
+                    onChange={(list) => patch({ marqueeSkills: list })}
                   />
                 </>
               ) : null}
@@ -350,27 +394,28 @@ export function AdminPanel() {
                           })
                         }
                       />
-                      <Field
+                      <ListField
                         label="Key highlights (one per line)"
                         textarea
-                        value={p.points.join("\n")}
+                        sep={"\n"}
+                        values={p.points}
                         placeholder={"Sub-2s latency\nSecure key handling"}
-                        onChange={(v) =>
+                        onChange={(list) =>
                           patch({
                             projects: content.projects.map((x, k) =>
-                              k === i ? { ...x, points: toList(v) } : x,
+                              k === i ? { ...x, points: list } : x,
                             ),
                           })
                         }
                       />
-                      <Field
+                      <ListField
                         label="Tech stack (comma separated)"
-                        value={p.stack.join(", ")}
+                        values={p.stack}
                         placeholder="Python, LangChain, Groq API"
-                        onChange={(v) =>
+                        onChange={(list) =>
                           patch({
                             projects: content.projects.map((x, k) =>
-                              k === i ? { ...x, stack: toList(v) } : x,
+                              k === i ? { ...x, stack: list } : x,
                             ),
                           })
                         }
@@ -441,14 +486,15 @@ export function AdminPanel() {
                           }
                         />
                       </div>
-                      <Field
+                      <ListField
                         label="Responsibilities (one per line)"
                         textarea
-                        value={job.points.join("\n")}
-                        onChange={(v) =>
+                        sep={"\n"}
+                        values={job.points}
+                        onChange={(list) =>
                           patch({
                             experience: content.experience.map((x, k) =>
-                              k === i ? { ...x, points: toList(v) } : x,
+                              k === i ? { ...x, points: list } : x,
                             ),
                           })
                         }
@@ -577,11 +623,12 @@ export function AdminPanel() {
 
               {tab === "Awards" ? (
                 <>
-                  <Field
+                  <ListField
                     label="Achievements and certifications (one per line)"
                     textarea
-                    value={content.achievements.join("\n")}
-                    onChange={(v) => patch({ achievements: toList(v) })}
+                    sep={"\n"}
+                    values={content.achievements}
+                    onChange={(list) => patch({ achievements: list })}
                   />
                 </>
               ) : null}

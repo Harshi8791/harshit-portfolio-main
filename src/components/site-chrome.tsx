@@ -1,3 +1,4 @@
+import { toExternalUrl } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useContent, useContentStore } from "@/lib/portfolio-store";
@@ -116,7 +117,7 @@ export function SiteFooter() {
           </a>
           <a
             className="transition-colors hover:text-primary"
-            href={profile.github}
+            href={toExternalUrl(profile.github)}
             target="_blank"
             rel="noreferrer"
           >
@@ -124,7 +125,7 @@ export function SiteFooter() {
           </a>
           <a
             className="transition-colors hover:text-primary"
-            href={profile.linkedin}
+            href={toExternalUrl(profile.linkedin)}
             target="_blank"
             rel="noreferrer"
           >

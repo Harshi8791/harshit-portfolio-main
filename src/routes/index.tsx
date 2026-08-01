@@ -4,6 +4,7 @@ import { Section, Tag } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
 import { roleRotation } from "@/lib/portfolio-data";
 import { useContent } from "@/lib/portfolio-store";
+import { toExternalUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -109,8 +110,8 @@ function Home() {
               </span>
               <span className="h-px w-8 bg-border" />
               {[
-                { label: "GitHub", href: profile.github, handle: "/github" },
-                { label: "LinkedIn", href: profile.linkedin, handle: "/linkedin" },
+                { label: "GitHub", href: toExternalUrl(profile.github), handle: "/github" },
+                { label: "LinkedIn", href: toExternalUrl(profile.linkedin), handle: "/linkedin" },
               ].map((s) => (
                 <a
                   key={s.label}
