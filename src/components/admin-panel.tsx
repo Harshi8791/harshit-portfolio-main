@@ -101,11 +101,55 @@ function Card({ title, onRemove, children }: { title: string; onRemove: () => vo
 }
 
 /** Comma / newline separated list helpers */
-const toList = (v: string) =>
+const toList = (v: string, sep: string) =>
   v
-    .split(/[\n,]/)
+    .split(sep === "\n" ? /\n/ : /[\n,]/)
     .map((s) => s.trim())
     .filter(Boolean);
+
+/**
+ * List editor that keeps the raw text you type (so commas, trailing spaces and
+ * empty lines survive) and only parses it into an array for the store.
+ */
+function ListField({
+  label,
+  values,
+  onChange,
+  sep = ", ",
+  textarea,
+  placeholder,
+}: {
+  label: string;
+  values: string[];
+  onChange: (list: string[]) => void;
+  sep?: string;
+  textarea?: boolean;
+  placeholder?: string;
+}) {
+  const [draft, setDraft] = useState(() => values.join(sep));
+
+  useEffect(() => {
+    const parsed = toList(draft, sep);
+    if (parsed.length !== values.length || parsed.some((s, i) => s !== values[i])) {
+      setDraft(values.join(sep));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
+
+  return (
+    <Field
+      label={label}
+      textarea={textarea}
+      placeholder={placeholder}
+      value={draft}
+      onChange={(v) => {
+        setDraft(v);
+        onChange(toList(v, sep));
+      }}
+    />
+  );
+}
+
 
 /* ---------- panel ---------- */
 
