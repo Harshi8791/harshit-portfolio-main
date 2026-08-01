@@ -55,11 +55,25 @@ export const defaultContent: Content = {
 };
 
 const STORAGE_KEY = "portfolio-content-v1";
+const THEME_KEY = "portfolio-theme-v1";
+
+export const THEMES = [
+  { id: "cyber", name: "Cyber Blue", note: "Neon blue on black", swatch: ["#0b0f1a", "#4f8bff", "#63d8f5"] },
+  { id: "matrix", name: "Matrix Green", note: "Terminal green on black", swatch: ["#07120c", "#3ff08a", "#9cf25a"] },
+  { id: "magenta", name: "Neon Magenta", note: "Synthwave pink / violet", swatch: ["#120a16", "#ff5ec8", "#a98bff"] },
+  { id: "amber", name: "Solar Amber", note: "Warm HUD amber", swatch: ["#141008", "#ffb545", "#ff8a3d"] },
+  { id: "ice", name: "Ice Cyan", note: "Cold arctic cyan", swatch: ["#0a1116", "#7fe9ef", "#bcd9ff"] },
+  { id: "void", name: "Mono Void", note: "Pure black & white HUD", swatch: ["#050508", "#e8e8ef", "#7a6bff"] },
+] as const;
+
+export type ThemeId = (typeof THEMES)[number]["id"];
 
 type Ctx = {
   content: Content;
   setContent: (updater: (prev: Content) => Content) => void;
   reset: () => void;
+  theme: ThemeId;
+  setTheme: (id: ThemeId) => void;
   adminOpen: boolean;
   openAdmin: () => void;
   closeAdmin: () => void;
@@ -70,6 +84,7 @@ const ContentContext = createContext<Ctx | null>(null);
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [content, setContentState] = useState<Content>(defaultContent);
   const [adminOpen, setAdminOpen] = useState(false);
+  const [theme, setThemeState] = useState<ThemeId>("cyber");
 
   useEffect(() => {
     try {
@@ -77,6 +92,26 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       if (raw) setContentState({ ...defaultContent, ...(JSON.parse(raw) as Partial<Content>) });
     } catch {
       /* ignore corrupt storage */
+    }
+  }, []);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(THEME_KEY) as ThemeId | null;
+    if (saved && THEMES.some((t) => t.id === saved)) setThemeState(saved);
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "cyber") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const setTheme = useCallback((id: ThemeId) => {
+    setThemeState(id);
+    try {
+      window.localStorage.setItem(THEME_KEY, id);
+    } catch {
+      /* storage may be unavailable */
     }
   }, []);
 
@@ -106,11 +141,13 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       content,
       setContent,
       reset,
+      theme,
+      setTheme,
       adminOpen,
       openAdmin: () => setAdminOpen(true),
       closeAdmin: () => setAdminOpen(false),
     }),
-    [content, setContent, reset, adminOpen],
+    [content, setContent, reset, theme, setTheme, adminOpen],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
