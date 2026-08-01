@@ -102,6 +102,32 @@ function Home() {
                 {profile.email}
               </a>
             </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                Connect
+              </span>
+              <span className="h-px w-8 bg-border" />
+              {[
+                { label: "GitHub", href: profile.github, handle: "/github" },
+                { label: "LinkedIn", href: profile.linkedin, handle: "/linkedin" },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={`${profile.name} on ${s.label}`}
+                  className="glass-panel holo-border group inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-primary hover:shadow-[0_0_26px_-8px_var(--primary)]"
+                >
+                  <span className="size-1.5 rounded-full bg-primary/70 transition-transform group-hover:scale-125" />
+                  {s.label}
+                  <span className="text-primary/50 transition-transform group-hover:translate-x-0.5">
+                    ↗
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
 
           <div className="reveal relative" data-reveal data-visible="true">
