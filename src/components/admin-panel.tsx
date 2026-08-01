@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { useContentStore, type Content } from "@/lib/portfolio-store";
+import { THEMES, useContentStore, type Content } from "@/lib/portfolio-store";
 
 const ACCESS_CODE = "harshit";
 
@@ -11,6 +11,7 @@ const TABS = [
   "Education",
   "Stats",
   "Awards",
+  "Theme",
 ] as const;
 type Tab = (typeof TABS)[number];
 
@@ -109,7 +110,7 @@ const toList = (v: string) =>
 /* ---------- panel ---------- */
 
 export function AdminPanel() {
-  const { content, setContent, reset, adminOpen, closeAdmin } = useContentStore();
+  const { content, setContent, reset, theme, setTheme, adminOpen, closeAdmin } = useContentStore();
   const [tab, setTab] = useState<Tab>("Profile");
   const [unlocked, setUnlocked] = useState(false);
   const [code, setCode] = useState("");
@@ -161,10 +162,12 @@ export function AdminPanel() {
           >
             <Field label="Access code" value={code} onChange={(v) => (setCode(v), setError(false))} />
             {error ? (
-              <p className="font-mono text-[11px] text-destructive">Access denied — try again.</p>
+              <p className="font-mono text-[11px] text-destructive">
+                Access denied. Please check the code and try again.
+              </p>
             ) : (
               <p className="font-mono text-[11px] text-muted-foreground">
-                Default code: harshit
+                Default access code: harshit
               </p>
             )}
             <Btn tone="solid" type="submit">
@@ -221,7 +224,7 @@ export function AdminPanel() {
                   </div>
                   <div className="md:col-span-2">
                     <Field
-                      label="About / objective"
+                      label="About / career objective"
                       textarea
                       value={content.profile.objective}
                       onChange={(v) => patch({ profile: { ...content.profile, objective: v } })}
@@ -244,7 +247,7 @@ export function AdminPanel() {
                         <Field
                           label="Group title"
                           value={g.title}
-                          placeholder="e.g. GenAI / LLM"
+                          placeholder="e.g. Gen AI and LLMs"
                           onChange={(v) =>
                             patch({
                               skillGroups: content.skillGroups.map((x, k) =>
@@ -254,9 +257,9 @@ export function AdminPanel() {
                           }
                         />
                         <Field
-                          label="Note / label"
+                          label="Short note"
                           value={g.note}
-                          placeholder="e.g. core strength"
+                          placeholder="e.g. Core strength"
                           onChange={(v) =>
                             patch({
                               skillGroups: content.skillGroups.map((x, k) =>
@@ -267,7 +270,7 @@ export function AdminPanel() {
                         />
                       </div>
                       <Field
-                        label="Skills (comma separated)"
+                        label="Skills in this group (comma separated)"
                         textarea
                         value={g.items.join(", ")}
                         placeholder="LangChain, RAG, Prompt engineering"
@@ -292,7 +295,7 @@ export function AdminPanel() {
                     + Add skill group
                   </Btn>
                   <Field
-                    label="Marquee skills (comma separated)"
+                    label="Scrolling banner skills (comma separated)"
                     textarea
                     value={content.marqueeSkills.join(", ")}
                     onChange={(v) => patch({ marqueeSkills: toList(v) })}
@@ -324,7 +327,7 @@ export function AdminPanel() {
                         <Field
                           label="Category"
                           value={p.kind}
-                          placeholder="GenAI / Computer Vision / Frontend"
+                          placeholder="Gen AI, Computer Vision or Frontend"
                           onChange={(v) =>
                             patch({
                               projects: content.projects.map((x, k) =>
@@ -335,10 +338,10 @@ export function AdminPanel() {
                         />
                       </div>
                       <Field
-                        label="Summary"
+                        label="Short summary"
                         textarea
                         value={p.summary}
-                        placeholder="One or two lines about what it does"
+                        placeholder="One or two lines describing what it does"
                         onChange={(v) =>
                           patch({
                             projects: content.projects.map((x, k) =>
@@ -348,7 +351,7 @@ export function AdminPanel() {
                         }
                       />
                       <Field
-                        label="Highlights (one per line)"
+                        label="Key highlights (one per line)"
                         textarea
                         value={p.points.join("\n")}
                         placeholder={"Sub-2s latency\nSecure key handling"}
@@ -414,9 +417,9 @@ export function AdminPanel() {
                           }
                         />
                         <Field
-                          label="Organisation"
+                          label="Organization"
                           value={job.org}
-                          placeholder="Company name"
+                          placeholder="Company or organization name"
                           onChange={(v) =>
                             patch({
                               experience: content.experience.map((x, k) =>
@@ -426,7 +429,7 @@ export function AdminPanel() {
                           }
                         />
                         <Field
-                          label="Period"
+                          label="Duration"
                           value={job.period}
                           placeholder="Jul 2024 – Aug 2024"
                           onChange={(v) =>
@@ -492,7 +495,7 @@ export function AdminPanel() {
                           }
                         />
                         <Field
-                          label="Institute"
+                          label="Institution"
                           value={ed.school}
                           placeholder="University name"
                           onChange={(v) =>
@@ -504,7 +507,7 @@ export function AdminPanel() {
                           }
                         />
                         <Field
-                          label="Years"
+                          label="Years attended"
                           value={ed.period}
                           placeholder="2025 – 2027"
                           onChange={(v) =>
@@ -575,21 +578,66 @@ export function AdminPanel() {
               {tab === "Awards" ? (
                 <>
                   <Field
-                    label="Achievements & certifications (one per line)"
+                    label="Achievements and certifications (one per line)"
                     textarea
                     value={content.achievements.join("\n")}
                     onChange={(v) => patch({ achievements: toList(v) })}
                   />
                 </>
               ) : null}
+
+              {tab === "Theme" ? (
+                <div>
+                  <p className="mb-4 font-mono text-[11px] text-muted-foreground">
+                    Pick a colour scheme for the whole site. It applies instantly and is
+                    remembered on this device.
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {THEMES.map((t) => {
+                      const active = theme === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => setTheme(t.id)}
+                          className={`holo-border hud-corners group rounded-xl border p-4 text-left transition-all hover:-translate-y-0.5 ${
+                            active
+                              ? "border-primary bg-primary/10 shadow-[0_0_30px_-10px_var(--primary)]"
+                              : "border-primary/15 bg-card/50 hover:border-primary/50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            {t.swatch.map((c) => (
+                              <span
+                                key={c}
+                                className="size-5 rounded-full border border-foreground/10"
+                                style={{ background: c }}
+                              />
+                            ))}
+                          </div>
+                          <p className="mt-3 font-display text-sm font-semibold text-foreground">
+                            {t.name}
+                          </p>
+                          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                            {t.note}
+                          </p>
+                          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
+                            {active ? "● Active" : "Apply"}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-primary/15 pt-5">
               <p className="font-mono text-[11px] text-muted-foreground">
                 {saved ? (
-                  <span className="text-primary">● Saved to this browser</span>
+                  <span className="text-primary">● Changes saved on this device</span>
                 ) : (
-                  "Changes save automatically in this browser"
+                  "Every change is saved automatically on this device"
                 )}
               </p>
               <div className="flex gap-2">
