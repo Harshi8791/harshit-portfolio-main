@@ -209,11 +209,8 @@ export function AdminPanel() {
               <p className="font-mono text-[11px] text-destructive">
                 Access denied. Please check the code and try again.
               </p>
-            ) : (
-              <p className="font-mono text-[11px] text-muted-foreground">
-                Default access code: harshit
-              </p>
-            )}
+            ) : null}
+
             <Btn tone="solid" type="submit">
               Unlock
             </Btn>
