@@ -122,8 +122,6 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ContentProvider>
       <div className="ambient-field" aria-hidden />
-      <div className="beam-sweep" aria-hidden />
-      <div className="scanlines" aria-hidden />
       <div className="relative flex min-h-screen flex-col">
         <SiteNav />
         <main className="flex-1">
