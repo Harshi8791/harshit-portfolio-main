@@ -6,7 +6,7 @@ export const profile = {
   location: "Dehradun, Uttarakhand 248001, India",
   phone: "+91 8791256848",
   email: "hofficial996@gmail.com",
-  linkedin: "https://www.linkedin.com/",
+  linkedin: "https://www.linkedin.com/in/harshit-chandola-2185233b1/",
   github: "https://github.com/",
   objective:
     "Machine Learning Engineer with a strong foundation in classical ML (Scikit-learn, Pandas, NumPy) and hands-on experience building end-to-end pipelines. Actively building applied GenAI/LLM skills (LangChain, RAG) to extend into modern AI application development. Seeking an entry-level ML/AI role to solve real-world problems with data-driven solutions.",
