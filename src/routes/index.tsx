@@ -4,7 +4,7 @@ import { Section, Tag } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
 import { roleRotation } from "@/lib/portfolio-data";
 import { useContent } from "@/lib/portfolio-store";
-import { hireMailto, toExternalUrl } from "@/lib/utils";
+import { toExternalUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -96,12 +96,6 @@ function Home() {
               >
                 View projects
               </Link>
-              <a
-                href={hireMailto(profile.email, profile.name)}
-                className="glow-ring rounded-md border border-primary/50 bg-primary/10 px-6 py-3 font-mono text-xs uppercase tracking-widest text-primary transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground"
-              >
-                Hire me →
-              </a>
               <a
                 href={`mailto:${profile.email}`}
                 className="rounded-md border border-border px-6 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-colors hover:border-primary/60 hover:text-primary"
