@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Section } from "@/components/section";
 import { useReveal } from "@/hooks/use-reveal";
 import { useContent } from "@/lib/portfolio-store";
-import { toExternalUrl } from "@/lib/utils";
+import { hireMailto, toExternalUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -63,7 +63,16 @@ function ContactPage() {
         ))}
       </div>
 
-      <p className="reveal mt-10 font-mono text-xs text-muted-foreground" data-reveal>
+      <div className="reveal mt-10" data-reveal>
+        <a
+          href={hireMailto(profile.email, profile.name)}
+          className="glow-ring inline-flex rounded-md bg-primary px-7 py-3.5 font-mono text-xs uppercase tracking-widest text-primary-foreground transition-transform hover:-translate-y-0.5"
+        >
+          Hire me — open a prefilled email →
+        </a>
+      </div>
+
+      <p className="reveal mt-8 font-mono text-xs text-muted-foreground" data-reveal>
         Based in {profile.location} · Available for remote and on-site roles
       </p>
     </Section>

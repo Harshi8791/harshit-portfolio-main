@@ -1,4 +1,4 @@
-import { toExternalUrl } from "@/lib/utils";
+import { hireMailto, toExternalUrl } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useContent, useContentStore } from "@/lib/portfolio-store";
@@ -64,7 +64,7 @@ export function SiteNav() {
             </Link>
           ))}
           <a
-            href={`mailto:${profile.email}`}
+            href={hireMailto(profile.email, profile.name)}
             className="ml-3 rounded-md border border-primary/40 bg-primary/10 px-4 py-2 font-mono text-xs uppercase tracking-widest text-primary transition-all hover:bg-primary hover:text-primary-foreground"
           >
             Hire me
