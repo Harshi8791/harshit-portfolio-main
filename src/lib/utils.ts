@@ -13,3 +13,23 @@ export function toExternalUrl(value: string) {
   if (/^(mailto:|tel:)/i.test(v)) return v;
   return `https://${v.replace(/^\/+/, "")}`;
 }
+
+/** Prefilled "Hire me" mail draft so a visitor lands in a ready-to-send email. */
+export function hireMailto(email: string, name: string) {
+  const subject = `Opportunity for ${name} — Gen AI / ML Engineer`;
+  const body = [
+    `Hi ${name.split(" ")[0]},`,
+    "",
+    "I came across your portfolio and I'd like to talk about an opportunity.",
+    "",
+    "Company / Team:",
+    "Role:",
+    "Engagement type (full-time / internship / freelance):",
+    "Timeline:",
+    "",
+    "Looking forward to hearing from you.",
+    "",
+    "Best regards,",
+  ].join("\n");
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
