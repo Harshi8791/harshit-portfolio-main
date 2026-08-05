@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNav, SiteFooter } from "@/components/site-chrome";
 import { ContentProvider } from "@/lib/portfolio-store";
 import { AdminPanel } from "@/components/admin-panel";
+import { AiAssistant } from "@/components/ai-assistant";
 
 function NotFoundComponent() {
   return (
@@ -133,6 +134,7 @@ function RootComponent() {
         <SiteFooter />
       </div>
       <AdminPanel />
+      <AiAssistant />
       </ContentProvider>
     </QueryClientProvider>
 
