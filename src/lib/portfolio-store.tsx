@@ -104,6 +104,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const saved = window.localStorage.getItem(THEME_KEY) as ThemeId | null;
     if (saved && THEMES.some((t) => t.id === saved)) setThemeState(saved);
+    const savedMode = window.localStorage.getItem(MODE_KEY) as ModeId | null;
+    if (savedMode === "light" || savedMode === "dark") setModeState(savedMode);
   }, []);
 
   useEffect(() => {
@@ -111,6 +113,33 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     if (theme === "cyber") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-mode", mode);
+    root.classList.toggle("dark", mode === "dark");
+  }, [mode]);
+
+  const setMode = useCallback((id: ModeId) => {
+    setModeState(id);
+    try {
+      window.localStorage.setItem(MODE_KEY, id);
+    } catch {
+      /* storage may be unavailable */
+    }
+  }, []);
+
+  const toggleMode = useCallback(() => {
+    setModeState((prev) => {
+      const next: ModeId = prev === "dark" ? "light" : "dark";
+      try {
+        window.localStorage.setItem(MODE_KEY, next);
+      } catch {
+        /* storage may be unavailable */
+      }
+      return next;
+    });
+  }, []);
 
   const setTheme = useCallback((id: ThemeId) => {
     setThemeState(id);
@@ -120,6 +149,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       /* storage may be unavailable */
     }
   }, []);
+
 
   const setContent = useCallback((updater: (prev: Content) => Content) => {
     setContentState((prev) => {
