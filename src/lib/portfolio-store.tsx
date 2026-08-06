@@ -56,6 +56,7 @@ export const defaultContent: Content = {
 
 const STORAGE_KEY = "portfolio-content-v1";
 const THEME_KEY = "portfolio-theme-v1";
+const MODE_KEY = "portfolio-mode-v1";
 
 export const THEMES = [
   { id: "cyber", name: "Cyber Blue", note: "Neon blue on black", swatch: ["#0b0f1a", "#4f8bff", "#63d8f5"] },
