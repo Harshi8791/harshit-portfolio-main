@@ -1,9 +1,10 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Bot, Send, Sparkles, X } from "lucide-react";
+import { Moon, Send, Sun, Trash2, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { useContent } from "@/lib/portfolio-store";
+import { useContent, useContentStore } from "@/lib/portfolio-store";
+import aiMark from "@/assets/ai-twin-mark.png";
 
 import type { Content } from "@/lib/portfolio-store";
 
@@ -73,8 +74,9 @@ export function AiAssistant() {
     [resume],
   );
 
-  const { messages, sendMessage, status, error } = useChat({ transport });
+  const { messages, sendMessage, setMessages, status, error } = useChat({ transport });
   const busy = status === "submitted" || status === "streaming";
+  const { mode, toggleMode } = useContentStore();
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -101,9 +103,20 @@ export function AiAssistant() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close AI assistant" : "Ask my AI assistant"}
-        className="fixed bottom-6 right-6 z-[60] flex size-14 items-center justify-center rounded-full border border-primary/50 bg-background/80 text-primary shadow-[0_0_36px_-8px_var(--primary)] backdrop-blur-xl transition-all hover:scale-105 hover:bg-primary hover:text-primary-foreground"
+        className="group fixed bottom-6 right-6 z-[60] flex size-14 items-center justify-center rounded-full border border-primary/50 bg-background/80 text-primary shadow-[0_0_36px_-8px_var(--primary)] backdrop-blur-xl transition-all hover:scale-105"
       >
-        {open ? <X className="size-5" /> : <Bot className="size-6" />}
+        {open ? (
+          <X className="size-5" />
+        ) : (
+          <img
+            src={aiMark}
+            alt=""
+            loading="lazy"
+            width={816}
+            height={816}
+            className="size-9 transition-transform duration-500 group-hover:rotate-12"
+          />
+        )}
         {!open ? (
           <span className="animate-pulse-dot absolute -right-0.5 -top-0.5 size-3 rounded-full bg-primary" />
         ) : null}
@@ -112,10 +125,10 @@ export function AiAssistant() {
       {open ? (
         <div className="animate-fade-in glass-panel holo-border fixed bottom-24 right-6 z-[60] flex h-[min(560px,70vh)] w-[min(400px,calc(100vw-3rem))] flex-col overflow-hidden rounded-2xl border border-primary/25">
           <div className="flex items-center gap-3 border-b border-border/60 px-4 py-3">
-            <span className="flex size-9 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 text-primary">
-              <Sparkles className="size-4" />
+            <span className="flex size-9 items-center justify-center rounded-lg border border-primary/40 bg-primary/10">
+              <img src={aiMark} alt="" loading="lazy" width={816} height={816} className="size-6" />
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="font-display text-sm font-semibold tracking-tight">
                 Ask {content.profile.name.split(" ")[0]}&apos;s AI
               </p>
@@ -123,7 +136,27 @@ export function AiAssistant() {
                 Trained on my résumé
               </p>
             </div>
+            <button
+              type="button"
+              onClick={toggleMode}
+              aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={mode === "dark" ? "Light mode" : "Dark mode"}
+              className="flex size-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+            >
+              {mode === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMessages([])}
+              disabled={messages.length === 0}
+              aria-label="Clear chat"
+              title="Clear chat"
+              className="flex size-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-destructive/50 hover:text-destructive disabled:opacity-40"
+            >
+              <Trash2 className="size-4" />
+            </button>
           </div>
+
 
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.length === 0 ? (

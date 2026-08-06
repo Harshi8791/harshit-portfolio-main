@@ -56,6 +56,7 @@ export const defaultContent: Content = {
 
 const STORAGE_KEY = "portfolio-content-v1";
 const THEME_KEY = "portfolio-theme-v1";
+const MODE_KEY = "portfolio-mode-v1";
 
 export const THEMES = [
   { id: "cyber", name: "Cyber Blue", note: "Neon blue on black", swatch: ["#0b0f1a", "#4f8bff", "#63d8f5"] },
@@ -67,6 +68,7 @@ export const THEMES = [
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];
+export type ModeId = "dark" | "light";
 
 type Ctx = {
   content: Content;
@@ -74,6 +76,9 @@ type Ctx = {
   reset: () => void;
   theme: ThemeId;
   setTheme: (id: ThemeId) => void;
+  mode: ModeId;
+  setMode: (id: ModeId) => void;
+  toggleMode: () => void;
   adminOpen: boolean;
   openAdmin: () => void;
   closeAdmin: () => void;
@@ -85,6 +90,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [content, setContentState] = useState<Content>(defaultContent);
   const [adminOpen, setAdminOpen] = useState(false);
   const [theme, setThemeState] = useState<ThemeId>("cyber");
+  const [mode, setModeState] = useState<ModeId>("dark");
 
   useEffect(() => {
     try {
@@ -98,6 +104,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const saved = window.localStorage.getItem(THEME_KEY) as ThemeId | null;
     if (saved && THEMES.some((t) => t.id === saved)) setThemeState(saved);
+    const savedMode = window.localStorage.getItem(MODE_KEY) as ModeId | null;
+    if (savedMode === "light" || savedMode === "dark") setModeState(savedMode);
   }, []);
 
   useEffect(() => {
@@ -105,6 +113,33 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     if (theme === "cyber") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-mode", mode);
+    root.classList.toggle("dark", mode === "dark");
+  }, [mode]);
+
+  const setMode = useCallback((id: ModeId) => {
+    setModeState(id);
+    try {
+      window.localStorage.setItem(MODE_KEY, id);
+    } catch {
+      /* storage may be unavailable */
+    }
+  }, []);
+
+  const toggleMode = useCallback(() => {
+    setModeState((prev) => {
+      const next: ModeId = prev === "dark" ? "light" : "dark";
+      try {
+        window.localStorage.setItem(MODE_KEY, next);
+      } catch {
+        /* storage may be unavailable */
+      }
+      return next;
+    });
+  }, []);
 
   const setTheme = useCallback((id: ThemeId) => {
     setThemeState(id);
@@ -114,6 +149,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       /* storage may be unavailable */
     }
   }, []);
+
 
   const setContent = useCallback((updater: (prev: Content) => Content) => {
     setContentState((prev) => {
@@ -143,11 +179,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       reset,
       theme,
       setTheme,
+      mode,
+      setMode,
+      toggleMode,
       adminOpen,
       openAdmin: () => setAdminOpen(true),
       closeAdmin: () => setAdminOpen(false),
     }),
-    [content, setContent, reset, theme, setTheme, adminOpen],
+    [content, setContent, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
