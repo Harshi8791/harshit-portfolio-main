@@ -90,6 +90,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [content, setContentState] = useState<Content>(defaultContent);
   const [adminOpen, setAdminOpen] = useState(false);
   const [theme, setThemeState] = useState<ThemeId>("cyber");
+  const [mode, setModeState] = useState<ModeId>("dark");
 
   useEffect(() => {
     try {
