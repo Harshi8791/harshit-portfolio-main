@@ -68,6 +68,7 @@ export const THEMES = [
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];
+export type ModeId = "dark" | "light";
 
 type Ctx = {
   content: Content;
@@ -75,6 +76,9 @@ type Ctx = {
   reset: () => void;
   theme: ThemeId;
   setTheme: (id: ThemeId) => void;
+  mode: ModeId;
+  setMode: (id: ModeId) => void;
+  toggleMode: () => void;
   adminOpen: boolean;
   openAdmin: () => void;
   closeAdmin: () => void;
