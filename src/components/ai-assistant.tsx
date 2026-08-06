@@ -99,28 +99,51 @@ export function AiAssistant() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close AI assistant" : "Ask my AI assistant"}
-        className="group fixed bottom-6 right-6 z-[60] flex size-14 items-center justify-center rounded-full border border-primary/50 bg-background/80 text-primary shadow-[0_0_36px_-8px_var(--primary)] backdrop-blur-xl transition-all hover:scale-105"
-      >
-        {open ? (
-          <X className="size-5" />
-        ) : (
-          <img
-            src={aiMark}
-            alt=""
-            loading="lazy"
-            width={816}
-            height={816}
-            className="size-9 transition-transform duration-500 group-hover:rotate-12"
-          />
-        )}
+      <div className="fixed bottom-6 right-6 z-[60] flex items-center gap-3">
         {!open ? (
-          <span className="animate-pulse-dot absolute -right-0.5 -top-0.5 size-3 rounded-full bg-primary" />
+          <span className="glass-panel hidden items-center gap-2 rounded-full border border-primary/25 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground shadow-[0_0_28px_-14px_var(--primary)] sm:flex">
+            <span className="size-1.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
+            Ask my AI twin
+          </span>
         ) : null}
-      </button>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close AI assistant" : "Ask my AI assistant"}
+          className="group relative flex size-16 items-center justify-center rounded-full transition-transform duration-300 hover:scale-105 active:scale-95"
+        >
+          {/* outer glow + rotating conic ring */}
+          <span className="pointer-events-none absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,transparent_0deg,var(--primary)_90deg,transparent_200deg,var(--primary)_320deg,transparent_360deg)] opacity-70 blur-[1px] [animation:spin_5s_linear_infinite]" />
+          <span className="pointer-events-none absolute inset-[2px] rounded-full border border-primary/30 bg-background/90 backdrop-blur-xl" />
+          <span className="pointer-events-none absolute inset-0 rounded-full shadow-[0_0_40px_-6px_var(--primary)] transition-shadow duration-300 group-hover:shadow-[0_0_60px_-4px_var(--primary)]" />
+          {/* pulsing halo */}
+          {!open ? (
+            <span className="pointer-events-none absolute inset-0 animate-ping rounded-full border border-primary/40 [animation-duration:2.6s]" />
+          ) : null}
+
+          <span className="relative flex size-11 items-center justify-center rounded-full bg-primary/10">
+            {open ? (
+              <X className="size-5 text-primary" />
+            ) : (
+              <img
+                src={aiMark}
+                alt=""
+                loading="lazy"
+                width={816}
+                height={816}
+                className="size-9 drop-shadow-[0_0_10px_var(--primary)] transition-transform duration-500 group-hover:rotate-[14deg]"
+              />
+            )}
+          </span>
+
+          {!open ? (
+            <span className="absolute -right-0.5 -top-0.5 flex size-3.5 items-center justify-center rounded-full border border-background bg-primary shadow-[0_0_12px_var(--primary)]">
+              <span className="animate-pulse-dot size-1.5 rounded-full bg-primary-foreground" />
+            </span>
+          ) : null}
+        </button>
+      </div>
 
       {open ? (
         <div className="animate-fade-in glass-panel holo-border fixed bottom-24 right-6 z-[60] flex h-[min(560px,70vh)] w-[min(400px,calc(100vw-3rem))] flex-col overflow-hidden rounded-2xl border border-primary/25">
