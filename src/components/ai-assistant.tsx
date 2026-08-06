@@ -1,9 +1,10 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Bot, Send, Sparkles, X } from "lucide-react";
+import { Moon, Send, Sun, Trash2, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { useContent } from "@/lib/portfolio-store";
+import { useContent, useContentStore } from "@/lib/portfolio-store";
+import aiMark from "@/assets/ai-twin-mark.png";
 
 import type { Content } from "@/lib/portfolio-store";
 
