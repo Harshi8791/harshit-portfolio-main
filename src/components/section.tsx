@@ -46,9 +46,12 @@ export function Section({
 
 export function Tag({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-full border border-border bg-secondary/40 px-3 py-1 font-mono text-[11px] text-muted-foreground backdrop-blur-sm transition-all hover:border-primary/60 hover:text-primary hover:shadow-[0_0_18px_-6px_var(--primary)]">
+    <span className="rounded-sm border border-border bg-secondary/40 px-2.5 py-1 font-mono text-[11px] text-muted-foreground backdrop-blur-sm transition-all hover:border-primary/60 hover:text-primary hover:shadow-[0_0_18px_-6px_var(--primary)]">
+      <span className="text-primary/50">[</span>
       {children}
+      <span className="text-primary/50">]</span>
     </span>
   );
 }
+
 
