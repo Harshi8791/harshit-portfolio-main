@@ -130,8 +130,14 @@
 }
 
 @utility card-elevated {
-  background-color: var(--card);
+  position: relative;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--card) 88%, transparent),
+      color-mix(in oklab, var(--background) 92%, transparent));
   border: 1px solid var(--border);
+  border-left: 2px solid color-mix(in oklab, var(--primary) 45%, var(--border));
   box-shadow: var(--shadow-card);
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -143,6 +149,7 @@
     box-shadow: var(--shadow-glow);
   }
 }
+
 
 @utility glow-ring {
   box-shadow: var(--shadow-glow);
