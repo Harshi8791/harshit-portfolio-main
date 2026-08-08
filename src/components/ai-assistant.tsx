@@ -101,10 +101,11 @@ export function AiAssistant() {
     <>
       <div className="fixed bottom-6 right-6 z-[60] flex items-center gap-3">
         {!open ? (
-          <span className="glass-panel hidden items-center gap-2 rounded-full border border-primary/25 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground shadow-[0_0_28px_-14px_var(--primary)] sm:flex">
+          <span className="term-window hidden items-center gap-2 rounded-sm px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] text-muted-foreground sm:flex">
             <span className="size-1.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
-            Ask my AI twin
+            $ ./ask_ai_twin
           </span>
+
         ) : null}
 
         <button
