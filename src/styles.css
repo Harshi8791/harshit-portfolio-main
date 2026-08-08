@@ -130,14 +130,8 @@
 }
 
 @utility card-elevated {
-  position: relative;
-  border-radius: 6px;
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--card) 88%, transparent),
-      color-mix(in oklab, var(--background) 92%, transparent));
+  background-color: var(--card);
   border: 1px solid var(--border);
-  border-left: 2px solid color-mix(in oklab, var(--primary) 45%, var(--border));
   box-shadow: var(--shadow-card);
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -149,7 +143,6 @@
     box-shadow: var(--shadow-glow);
   }
 }
-
 
 @utility glow-ring {
   box-shadow: var(--shadow-glow);
@@ -615,75 +608,4 @@
 @utility boot-bar {
   transform-origin: left;
   animation: boot-bar 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* ---------- Terminal / hacker shell layer ---------- */
-
-@keyframes term-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-
-@keyframes term-flicker {
-  0%, 100% { opacity: 0.055; }
-  47% { opacity: 0.03; }
-  53% { opacity: 0.08; }
-}
-
-@utility term-window {
-  position: relative;
-  border: 1px solid color-mix(in oklab, var(--primary) 34%, var(--border));
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--card) 82%, transparent),
-      color-mix(in oklab, var(--background) 94%, transparent));
-  box-shadow:
-    inset 0 0 60px -30px color-mix(in oklab, var(--primary) 70%, transparent),
-    0 26px 70px -40px color-mix(in oklab, var(--primary) 60%, transparent);
-  backdrop-filter: blur(14px) saturate(150%);
-  overflow: hidden;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--primary) 40%, transparent) 0px,
-      color-mix(in oklab, var(--primary) 40%, transparent) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    animation: term-flicker 4.5s steps(2, end) infinite;
-    opacity: 0.055;
-  }
-}
-
-@utility term-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-bottom: 1px solid color-mix(in oklab, var(--primary) 26%, var(--border));
-  background: color-mix(in oklab, var(--primary) 7%, transparent);
-  padding: 0.5rem 0.85rem;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: color-mix(in oklab, var(--foreground) 70%, transparent);
-}
-
-@utility term-cursor {
-  display: inline-block;
-  width: 0.55em;
-  height: 1.05em;
-  translate: 0 0.16em;
-  background: var(--primary);
-  box-shadow: 0 0 10px var(--primary);
-  animation: term-blink 1.05s steps(1, end) infinite;
-}
-
-@utility term-glow {
-  text-shadow: 0 0 10px color-mix(in oklab, var(--primary) 55%, transparent);
 }

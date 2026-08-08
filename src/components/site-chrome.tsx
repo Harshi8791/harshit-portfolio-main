@@ -43,10 +43,9 @@ export function SiteNav() {
           className="group flex items-center gap-2.5"
         >
           <span className="animate-pulse-dot size-2.5 rounded-full bg-primary" />
-          <span className="term-glow font-mono text-sm font-semibold tracking-tight transition-colors group-hover:text-primary">
-            <span className="text-primary">root@</span>
-            {profile.name.split(" ")[0]?.toLowerCase()}
-            <span className="text-muted-foreground">:~#</span>
+          <span className="neon-text font-display text-sm font-semibold tracking-tight transition-colors group-hover:text-primary">
+            {profile.name.split(" ")[0]}
+            <span className="text-muted-foreground">.dev</span>
           </span>
         </button>
 
@@ -58,20 +57,19 @@ export function SiteNav() {
               key={link.to}
               to={link.to}
               activeOptions={{ exact: link.to === "/" }}
-              className="rounded-sm px-3 py-2 font-mono text-xs tracking-wide text-muted-foreground transition-colors hover:text-foreground"
+              className="rounded-md px-3 py-2 font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: "text-primary" }}
             >
-              ./{link.label.toLowerCase()}
+              {link.label}
             </Link>
           ))}
           <a
             href={`mailto:${profile.email}`}
-            className="ml-3 rounded-sm border border-primary/40 bg-primary/10 px-4 py-2 font-mono text-xs tracking-wide text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+            className="ml-3 rounded-md border border-primary/40 bg-primary/10 px-4 py-2 font-mono text-xs uppercase tracking-widest text-primary transition-all hover:bg-primary hover:text-primary-foreground"
           >
-            sudo hire_me
+            Hire me
           </a>
         </div>
-
 
         <button
           type="button"
@@ -92,13 +90,12 @@ export function SiteNav() {
               key={link.to}
               to={link.to}
               onClick={() => setOpen(false)}
-              className="block py-2.5 font-mono text-xs tracking-wide text-muted-foreground"
+              className="block py-2.5 font-mono text-xs uppercase tracking-widest text-muted-foreground"
               activeProps={{ className: "text-primary" }}
             >
-              ./{link.label.toLowerCase()}
+              {link.label}
             </Link>
           ))}
-
         </div>
       ) : null}
     </header>

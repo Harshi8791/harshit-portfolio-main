@@ -101,11 +101,10 @@ export function AiAssistant() {
     <>
       <div className="fixed bottom-6 right-6 z-[60] flex items-center gap-3">
         {!open ? (
-          <span className="term-window hidden items-center gap-2 rounded-sm px-3 py-1.5 font-mono text-[10px] tracking-[0.12em] text-muted-foreground sm:flex">
+          <span className="glass-panel hidden items-center gap-2 rounded-full border border-primary/25 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground shadow-[0_0_28px_-14px_var(--primary)] sm:flex">
             <span className="size-1.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
-            $ ./ask_ai_twin
+            Ask my AI twin
           </span>
-
         ) : null}
 
         <button
@@ -147,51 +146,47 @@ export function AiAssistant() {
       </div>
 
       {open ? (
-        <div className="animate-fade-in term-window fixed bottom-24 right-6 z-[60] flex h-[min(560px,70vh)] w-[min(420px,calc(100vw-3rem))] flex-col overflow-hidden">
-          <div className="term-bar">
-            <span className="flex gap-1.5">
-              <span className="size-2.5 rounded-full bg-destructive/70" />
-              <span className="size-2.5 rounded-full bg-accent/70" />
-              <span className="size-2.5 rounded-full bg-primary/70" />
+        <div className="animate-fade-in glass-panel holo-border fixed bottom-24 right-6 z-[60] flex h-[min(560px,70vh)] w-[min(400px,calc(100vw-3rem))] flex-col overflow-hidden rounded-2xl border border-primary/25">
+          <div className="flex items-center gap-3 border-b border-border/60 px-4 py-3">
+            <span className="flex size-9 items-center justify-center rounded-lg border border-primary/40 bg-primary/10">
+              <img src={aiMark} alt="" loading="lazy" width={816} height={816} className="size-6" />
             </span>
-            <span className="ml-2 truncate text-primary">
-              {content.profile.name.split(" ")[0]?.toLowerCase()}-ai@shell: ~
-            </span>
-            <span className="ml-auto flex items-center gap-1">
-              <button
-                type="button"
-                onClick={toggleMode}
-                aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                title={mode === "dark" ? "Light mode" : "Dark mode"}
-                className="flex size-7 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
-              >
-                {mode === "dark" ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
-              </button>
-              <button
-                type="button"
-                onClick={() => setMessages([])}
-                disabled={messages.length === 0}
-                aria-label="Clear chat"
-                title="Clear chat"
-                className="flex size-7 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:border-destructive/50 hover:text-destructive disabled:opacity-40"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-sm font-semibold tracking-tight">
+                Ask {content.profile.name.split(" ")[0]}&apos;s AI
+              </p>
+              <p className="truncate font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                Trained on my résumé
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={toggleMode}
+              aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={mode === "dark" ? "Light mode" : "Dark mode"}
+              className="flex size-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+            >
+              {mode === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMessages([])}
+              disabled={messages.length === 0}
+              aria-label="Clear chat"
+              title="Clear chat"
+              className="flex size-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-destructive/50 hover:text-destructive disabled:opacity-40"
+            >
+              <Trash2 className="size-4" />
+            </button>
           </div>
 
-          <div
-            ref={scrollRef}
-            className="flex-1 space-y-3 overflow-y-auto px-4 py-4 font-mono text-[13px]"
-          >
+
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.length === 0 ? (
               <div className="space-y-3">
-                <p className="text-muted-foreground">
-                  <span className="text-primary">system</span>:~$ init ai_twin --resume
-                </p>
-                <p className="leading-relaxed text-muted-foreground">
-                  Session ready. I&apos;m {content.profile.name.split(" ")[0]}&apos;s AI twin — ask
-                  about projects, skills or experience.
+                <p className="text-sm text-muted-foreground">
+                  Hi — I&apos;m {content.profile.name.split(" ")[0]}&apos;s AI twin. Ask me about his
+                  projects, skills or experience.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {SUGGESTIONS.map((s) => (
@@ -199,9 +194,9 @@ export function AiAssistant() {
                       key={s}
                       type="button"
                       onClick={() => send(s)}
-                      className="rounded-sm border border-border px-2.5 py-1.5 text-left text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+                      className="rounded-full border border-border px-3 py-1.5 text-left font-mono text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
                     >
-                      $ {s}
+                      {s}
                     </button>
                   ))}
                 </div>
@@ -209,43 +204,38 @@ export function AiAssistant() {
             ) : null}
 
             {messages.map((message) => (
-              <div key={message.id} className="space-y-1">
-                <p className="text-[11px] text-muted-foreground">
-                  {message.role === "user" ? (
-                    <>
-                      <span className="text-accent">visitor@shell</span>:~$
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-primary">ai_twin</span>@shell:~#
-                    </>
-                  )}
-                </p>
+              <div
+                key={message.id}
+                className={message.role === "user" ? "flex justify-end" : "flex justify-start"}
+              >
                 <div
-                  className={`space-y-2 border-l-2 pl-3 leading-relaxed [&_a]:text-primary [&_a]:underline [&_code]:text-primary [&_li]:ml-4 [&_li]:list-disc [&_strong]:text-foreground ${
+                  className={`max-w-[85%] space-y-2 rounded-xl px-3 py-2 text-sm leading-relaxed [&_a]:text-primary [&_a]:underline [&_code]:font-mono [&_code]:text-primary [&_li]:ml-4 [&_li]:list-disc [&_strong]:text-foreground ${
                     message.role === "user"
-                      ? "border-accent/50 text-foreground"
-                      : "border-primary/50 text-muted-foreground"
+                      ? "border border-primary/40 bg-primary/15 text-foreground"
+                      : "border border-border bg-card/70 text-muted-foreground"
                   }`}
                 >
                   {messageText(message) ? (
                     <ReactMarkdown>{messageText(message)}</ReactMarkdown>
                   ) : (
-                    <span className="text-xs text-primary">thinking…</span>
+                    <span className="font-mono text-xs text-primary">thinking…</span>
                   )}
+
                 </div>
               </div>
             ))}
 
             {status === "submitted" ? (
-              <p className="text-xs text-primary">
-                <span className="animate-pulse">$ parsing resume…</span>
-              </p>
+              <div className="flex justify-start">
+                <div className="rounded-xl border border-border bg-card/70 px-3 py-2 font-mono text-xs text-primary">
+                  <span className="animate-pulse">analysing résumé…</span>
+                </div>
+              </div>
             ) : null}
 
             {error ? (
-              <p className="rounded-sm border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-                stderr: assistant unavailable right now. Please try again in a moment.
+              <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                Assistant unavailable right now. Please try again in a moment.
               </p>
             ) : null}
           </div>
@@ -255,28 +245,26 @@ export function AiAssistant() {
               e.preventDefault();
               send(input);
             }}
-            className="flex items-center gap-2 border-t border-primary/25 bg-background/40 px-3 py-3 font-mono"
+            className="flex items-center gap-2 border-t border-border/60 px-3 py-3"
           >
-            <span className="text-xs text-primary">$</span>
             <input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="ask --about work"
-              className="flex-1 border-none bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
+              placeholder="Ask about my work…"
+              className="flex-1 rounded-lg border border-border bg-background/60 px-3 py-2 text-sm outline-none transition-colors focus:border-primary/60"
             />
             <button
               type="submit"
               disabled={busy || !input.trim()}
               aria-label="Send message"
-              className="flex size-8 items-center justify-center rounded-sm border border-primary/40 bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
+              className="flex size-9 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
             >
               <Send className="size-4" />
             </button>
           </form>
         </div>
       ) : null}
-
     </>
   );
 }
