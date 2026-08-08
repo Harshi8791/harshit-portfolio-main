@@ -67,80 +67,101 @@ function Home() {
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero — terminal shell */}
       <section className="relative overflow-hidden">
         <div className="hero-aurora pointer-events-none absolute inset-0" />
         <div className="surface-grid animate-grid-pan pointer-events-none absolute inset-0 opacity-40" />
-        <div className="relative mx-auto grid max-w-6xl gap-14 px-6 pb-24 pt-20 md:pb-32 md:pt-28 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="reveal" data-reveal data-visible="true">
-            <span className="glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              <span className="animate-pulse-dot size-1.5 rounded-full bg-primary" />
-              Open to ML / AI roles
-            </span>
-
-            <h1 className="mt-7 text-4xl font-semibold leading-[1.05] sm:text-6xl">
-              <span className="text-gradient neon-text">{profile.name}</span>
-            </h1>
-
-            <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
-              {profile.role} — <Typewriter />
-            </p>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-              {profile.tagline}
-            </p>
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                to="/projects"
-                className="glow-ring rounded-md bg-primary px-6 py-3 font-mono text-xs uppercase tracking-widest text-primary-foreground transition-transform hover:-translate-y-0.5"
-              >
-                View projects
-              </Link>
-              <a
-                href={`mailto:${profile.email}`}
-                className="rounded-md border border-border px-6 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-colors hover:border-primary/60 hover:text-primary"
-              >
-                {profile.email}
-              </a>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                Connect
-              </span>
-              <span className="h-px w-8 bg-border" />
-              {[
-                { label: "GitHub", href: toExternalUrl(profile.github), handle: "/github" },
-                { label: "LinkedIn", href: toExternalUrl(profile.linkedin), handle: "/linkedin" },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label={`${profile.name} on ${s.label}`}
-                  className="glass-panel holo-border group inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-primary hover:shadow-[0_0_26px_-8px_var(--primary)]"
-                >
-                  <span className="size-1.5 rounded-full bg-primary/70 transition-transform group-hover:scale-125" />
-                  {s.label}
-                  <span className="text-primary/50 transition-transform group-hover:translate-x-0.5">
-                    ↗
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div className="reveal relative" data-reveal data-visible="true">
-            <div className="animate-float card-elevated holo-border hud-corners rounded-xl p-5 font-mono text-[13px] leading-relaxed">
-
-              <div className="flex gap-1.5 pb-4">
+        <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-16 md:pb-28 md:pt-24">
+          <div className="term-window reveal" data-reveal data-visible="true">
+            <div className="term-bar">
+              <span className="flex gap-1.5">
                 <span className="size-2.5 rounded-full bg-destructive/70" />
                 <span className="size-2.5 rounded-full bg-accent/70" />
                 <span className="size-2.5 rounded-full bg-primary/70" />
+              </span>
+              <span className="ml-2 truncate">
+                {profile.name.split(" ")[0]?.toLowerCase()}@portfolio: ~/whoami
+              </span>
+              <span className="ml-auto hidden text-primary/70 sm:inline">bash — 80×24</span>
+            </div>
+
+            <div className="grid gap-10 p-6 font-mono text-sm md:p-9 lg:grid-cols-[1.15fr_0.85fr]">
+              <div>
+                <p className="text-muted-foreground">
+                  <span className="text-primary">visitor@portfolio</span>:<span className="text-accent">~</span>${" "}
+                  <span className="text-foreground">whoami</span>
+                </p>
+
+                <h1 className="mt-4 font-mono text-3xl font-semibold leading-[1.1] sm:text-5xl">
+                  <span className="text-primary term-glow">{profile.name}</span>
+                </h1>
+
+                <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+                  {profile.role} — <Typewriter />
+                </p>
+
+                <p className="mt-6 text-muted-foreground">
+                  <span className="text-primary">visitor@portfolio</span>:<span className="text-accent">~</span>${" "}
+                  <span className="text-foreground">cat about.txt</span>
+                </p>
+                <p className="mt-2 max-w-xl leading-relaxed text-muted-foreground">
+                  {profile.tagline}
+                </p>
+
+                <p className="mt-6 text-muted-foreground">
+                  <span className="text-primary">visitor@portfolio</span>:<span className="text-accent">~</span>${" "}
+                  <span className="text-foreground">./connect.sh</span>
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link
+                    to="/projects"
+                    className="glow-ring rounded-sm bg-primary px-5 py-2.5 text-xs uppercase tracking-widest text-primary-foreground transition-transform hover:-translate-y-0.5"
+                  >
+                    ./view_projects
+                  </Link>
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="rounded-sm border border-border px-5 py-2.5 text-xs tracking-wide text-foreground transition-colors hover:border-primary/60 hover:text-primary"
+                  >
+                    mail -s "hi" {profile.email}
+                  </a>
+                </div>
+
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  <span className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                    links
+                  </span>
+                  <span className="h-px w-8 bg-border" />
+                  {[
+                    { label: "github", href: toExternalUrl(profile.github) },
+                    { label: "linkedin", href: toExternalUrl(profile.linkedin) },
+                  ].map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={`${profile.name} on ${s.label}`}
+                      className="group inline-flex items-center gap-2 rounded-sm border border-border px-3 py-1.5 text-[11px] text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/60 hover:text-primary hover:shadow-[0_0_26px_-8px_var(--primary)]"
+                    >
+                      <span className="text-primary/70">~/</span>
+                      {s.label}
+                      <span className="text-primary/50 transition-transform group-hover:translate-x-0.5">
+                        ↗
+                      </span>
+                    </a>
+                  ))}
+                  <span className="term-cursor" aria-hidden />
+                </div>
               </div>
-              <pre className="overflow-x-auto text-muted-foreground">
-                <code>{`from langchain_groq import ChatGroq
+
+              <div className="rounded-sm border border-primary/20 bg-background/50 p-4 text-[13px] leading-relaxed">
+                <p className="mb-3 text-[10px] uppercase tracking-[0.25em] text-primary/70">
+                  ~/demo/chain.py
+                </p>
+                <pre className="overflow-x-auto text-muted-foreground">
+                  <code>{`from langchain_groq import ChatGroq
 
 llm = ChatGroq(model="llama-3.3-70b")
 chain = prompt | llm | parser
@@ -149,10 +170,12 @@ chain.invoke({
   "q": "Who should we hire?"
 })
 # -> "Harshit Chandola"  (1.8s)`}</code>
-              </pre>
+                </pre>
+              </div>
             </div>
           </div>
         </div>
+
 
         {/* Marquee */}
         <div className="relative border-y border-border bg-card/40 py-4">
