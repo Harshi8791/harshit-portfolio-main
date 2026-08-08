@@ -92,12 +92,13 @@ export function SiteNav() {
               key={link.to}
               to={link.to}
               onClick={() => setOpen(false)}
-              className="block py-2.5 font-mono text-xs uppercase tracking-widest text-muted-foreground"
+              className="block py-2.5 font-mono text-xs tracking-wide text-muted-foreground"
               activeProps={{ className: "text-primary" }}
             >
-              {link.label}
+              ./{link.label.toLowerCase()}
             </Link>
           ))}
+
         </div>
       ) : null}
     </header>
