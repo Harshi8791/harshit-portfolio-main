@@ -37,6 +37,16 @@ ${resume}`,
 
         return result.toUIMessageStreamResponse({
           originalMessages: body.messages as UIMessage[],
+          onError: (error) => {
+            const message = error instanceof Error ? error.message : String(error);
+            if (message.includes("402") || /credit/i.test(message)) {
+              return "AI credits are exhausted. Please add credits to your Lovable workspace to re-enable the assistant.";
+            }
+            if (message.includes("429")) {
+              return "Too many requests right now — please try again in a moment.";
+            }
+            return "Assistant unavailable right now. Please try again in a moment.";
+          },
         });
       },
     },
