@@ -235,7 +235,7 @@ export function AiAssistant() {
 
             {error ? (
               <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-                Assistant unavailable right now. Please try again in a moment.
+                {error.message || "Assistant unavailable right now. Please try again in a moment."}
               </p>
             ) : null}
           </div>
