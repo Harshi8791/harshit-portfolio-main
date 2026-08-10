@@ -38,11 +38,13 @@ ${resume}`,
         return result.toUIMessageStreamResponse({
           originalMessages: body.messages as UIMessage[],
           onError: (error) => {
-            const message = error instanceof Error ? error.message : String(error);
-            if (message.includes("402") || /credit/i.test(message)) {
+            const raw = error instanceof Error ? error.message : String(error);
+            const detail = JSON.stringify(error);
+            console.error("[api/chat] stream error:", raw, detail);
+            if (/402|credit|payment/i.test(raw + detail)) {
               return "AI credits are exhausted. Please add credits to your Lovable workspace to re-enable the assistant.";
             }
-            if (message.includes("429")) {
+            if (/429|rate.?limit/i.test(raw + detail)) {
               return "Too many requests right now — please try again in a moment.";
             }
             return "Assistant unavailable right now. Please try again in a moment.";
