@@ -1,4 +1,4 @@
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 
@@ -12,12 +12,17 @@ export const Route = createFileRoute("/api/chat")({
         if (!Array.isArray(body.messages)) {
           return new Response("Messages are required", { status: 400 });
         }
-        const key = process.env["LOVABLE_API_KEY"];
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const key = process.env["AI_GATEWAY_API_KEY"] ?? process.env["GEMINI_API_KEY"];
+        if (!key) {
+          return new Response(
+            "Missing AI_GATEWAY_API_KEY. Add the Vercel AI Gateway integration or set GEMINI_API_KEY.",
+            { status: 500 },
+          );
+        }
 
         const resume = typeof body.resume === "string" ? body.resume : "";
 
-        const gateway = createLovableAiGatewayProvider(key);
+        const gateway = createAiGatewayProvider(key);
         const result = streamText({
           model: gateway("google/gemini-3.6-flash"),
           system: `You are an AI assistant that represents the job candidate described below. You speak on his behalf in first person ("I"), as if a recruiter or hiring manager is interviewing him.
