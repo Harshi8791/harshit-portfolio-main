@@ -18,6 +18,8 @@ export const Route = createFileRoute("/contact")({
         property: "og:description",
         content: "Open to entry-level ML/AI roles and applied GenAI collaborations.",
       },
+       { property: "og:type", content: "website" },
+       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ContactPage,
@@ -48,6 +50,7 @@ function ContactPage() {
             rel="noreferrer"
             className="reveal card-elevated holo-border group flex items-center justify-between rounded-xl p-7"
             data-reveal
+            data-glow
             style={{ transitionDelay: `${i * 70}ms` }}
           >
             <span>

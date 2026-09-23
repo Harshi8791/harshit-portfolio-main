@@ -77,6 +77,9 @@
     transparent 70%,
     color-mix(in oklab, var(--primary) 55%, transparent)
   );
+  --neural-violet: oklch(0.68 0.16 292);
+  --neural-line: color-mix(in oklab, var(--primary) 16%, transparent);
+  --neural-surface: color-mix(in oklab, var(--card) 74%, transparent);
 }
 
 
@@ -130,6 +133,8 @@
 }
 
 @utility card-elevated {
+  position: relative;
+  overflow: hidden;
   background-color: var(--card);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
@@ -141,6 +146,22 @@
     transform: translateY(-4px);
     border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
     box-shadow: var(--shadow-glow);
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      380px circle at var(--gx, 50%) var(--gy, 50%),
+      color-mix(in oklab, var(--primary) 13%, transparent),
+      transparent 58%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  &:hover::after {
+    opacity: 1;
   }
 }
 
@@ -258,7 +279,8 @@
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(120% 80% at 50% -10%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%),
+    radial-gradient(90% 70% at 18% 0%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 62%),
+    radial-gradient(70% 55% at 94% 82%, color-mix(in oklab, var(--neural-violet) 7%, transparent), transparent 70%),
     var(--background);
 
   &::before,
@@ -269,7 +291,7 @@
     height: 45vw;
     border-radius: 999px;
     filter: blur(90px);
-    opacity: 0.45;
+    opacity: 0.22;
   }
   &::before {
     top: -12vw;
@@ -283,6 +305,139 @@
     background: color-mix(in oklab, var(--accent) 40%, transparent);
     animation: drift-b 22s ease-in-out infinite;
   }
+}
+
+@utility neural-grid {
+  opacity: 0.55;
+  background-image:
+    linear-gradient(to right, var(--neural-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--neural-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 78% 68% at 50% 5%, black 20%, transparent 82%);
+}
+
+@keyframes neural-travel {
+  0% { transform: translateX(-35%); opacity: 0; }
+  15%, 70% { opacity: 0.7; }
+  100% { transform: translateX(135%); opacity: 0; }
+}
+
+@utility neural-trace {
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 31%;
+    left: 0;
+    width: 28%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    box-shadow: 0 0 18px color-mix(in oklab, var(--primary) 50%, transparent);
+    animation: neural-travel 9s ease-in-out infinite;
+  }
+}
+
+@utility system-pill {
+  background: color-mix(in oklab, var(--card) 58%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 28%, var(--border));
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 20px color-mix(in oklab, var(--primary) 5%, transparent);
+}
+
+@keyframes orbit-forward { to { transform: rotate(360deg); } }
+@keyframes orbit-reverse { to { transform: rotate(-360deg); } }
+@keyframes core-breathe {
+  0%, 100% { transform: scale(0.88); opacity: 0.55; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@utility neural-console {
+  isolation: isolate;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  & > *:not(.neural-orbit) {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+@utility neural-orbit {
+  position: absolute;
+  right: -2.5rem;
+  top: -3.25rem;
+  width: 10rem;
+  height: 10rem;
+  opacity: 0.38;
+  pointer-events: none;
+  & span {
+    position: absolute;
+    inset: 0;
+    border: 1px solid color-mix(in oklab, var(--primary) 45%, transparent);
+    border-radius: 999px;
+    animation: orbit-forward 13s linear infinite;
+  }
+  & span:nth-child(2) {
+    inset: 1.35rem;
+    border-color: color-mix(in oklab, var(--neural-violet) 42%, transparent);
+    border-style: dashed;
+    animation: orbit-reverse 9s linear infinite;
+  }
+  & i {
+    position: absolute;
+    inset: 3.75rem;
+    border-radius: 999px;
+    background: var(--primary);
+    box-shadow: 0 0 30px var(--primary);
+    animation: core-breathe 3.2s ease-in-out infinite;
+  }
+}
+
+@utility metric-cell {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  &::before {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 0.85rem;
+    height: 1px;
+    transform: scaleX(0.22);
+    transform-origin: left;
+    background: linear-gradient(90deg, var(--primary), var(--neural-violet));
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  &:hover::before { transform: scaleX(1); }
+}
+
+@utility scroll-rail {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 80;
+  height: 2px;
+  pointer-events: none;
+  & span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform-origin: left;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--neural-violet));
+    box-shadow: 0 0 12px color-mix(in oklab, var(--primary) 65%, transparent);
+  }
+}
+
+@utility cursor-spotlight {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 30rem;
+  height: 30rem;
+  pointer-events: none;
+  transform: translate(calc(var(--cursor-x, -1000px) - 50%), calc(var(--cursor-y, -1000px) - 50%));
+  background: radial-gradient(circle, color-mix(in oklab, var(--primary) 7%, transparent), transparent 67%);
+  transition: transform 0.08s linear;
 }
 
 @utility scanlines {
@@ -320,6 +475,8 @@
     );
     animation: scan-move 9s linear infinite;
   }
+  .cursor-spotlight { display: none; }
+  [data-glow] { transform: none !important; }
 }
 
 @utility animate-grid-pan {
