@@ -21,6 +21,8 @@ export const Route = createFileRoute("/")({
         content:
           "LLM applications, RAG pipelines and applied machine learning — projects, experience and skills.",
       },
+       { property: "og:type", content: "website" },
+       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,
@@ -70,10 +72,11 @@ function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="hero-aurora pointer-events-none absolute inset-0" />
-        <div className="surface-grid animate-grid-pan pointer-events-none absolute inset-0 opacity-40" />
+        <div className="neural-grid pointer-events-none absolute inset-0" />
+        <div className="neural-trace pointer-events-none absolute inset-0" />
         <div className="relative mx-auto grid max-w-6xl gap-14 px-6 pb-24 pt-20 md:pb-32 md:pt-28 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="reveal" data-reveal data-visible="true">
-            <span className="glass-panel inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="system-pill inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               <span className="animate-pulse-dot size-1.5 rounded-full bg-primary" />
               Open to ML / AI roles
             </span>
@@ -132,7 +135,12 @@ function Home() {
           </div>
 
           <div className="reveal relative" data-reveal data-visible="true">
-            <div className="animate-float card-elevated holo-border hud-corners rounded-xl p-5 font-mono text-[13px] leading-relaxed">
+            <div className="neural-console card-elevated holo-border hud-corners rounded-xl p-5 font-mono text-[13px] leading-relaxed" data-glow>
+              <div className="neural-orbit" aria-hidden>
+                <span />
+                <span />
+                <i />
+              </div>
 
               <div className="flex gap-1.5 pb-4">
                 <span className="size-2.5 rounded-full bg-destructive/70" />
@@ -177,8 +185,9 @@ chain.invoke({
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="reveal bg-card p-6"
+              className="reveal metric-cell bg-card p-6"
               data-reveal
+              data-glow
               style={{ transitionDelay: `${i * 70}ms` }}
             >
               <p className="font-display text-3xl font-semibold text-primary">{stat.value}</p>
@@ -194,7 +203,7 @@ chain.invoke({
           <p className="reveal text-base leading-relaxed text-muted-foreground" data-reveal>
             {profile.objective}
           </p>
-          <div className="reveal card-elevated holo-border rounded-xl p-6" data-reveal>
+          <div className="reveal card-elevated holo-border rounded-xl p-6" data-reveal data-glow>
             <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Education</h3>
             <ul className="mt-5 space-y-5">
               {education.map((item) => (
@@ -221,6 +230,7 @@ chain.invoke({
               key={group.title}
               className="reveal card-elevated holo-border rounded-xl p-6"
               data-reveal
+              data-glow
               style={{ transitionDelay: `${i * 70}ms` }}
             >
               <div className="flex items-baseline justify-between gap-4">
@@ -247,6 +257,7 @@ chain.invoke({
               key={project.name}
               className="reveal card-elevated holo-border flex flex-col rounded-xl p-6"
               data-reveal
+              data-glow
               style={{ transitionDelay: `${i * 80}ms` }}
             >
               <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
@@ -282,6 +293,7 @@ chain.invoke({
               key={item}
               className="reveal card-elevated holo-border rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
               data-reveal
+              data-glow
               style={{ transitionDelay: `${i * 70}ms` }}
             >
               {item}

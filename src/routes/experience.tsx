@@ -17,6 +17,8 @@ export const Route = createFileRoute("/experience")({
         property: "og:description",
         content: "Data preprocessing, automation and front-end engineering internships.",
       },
+       { property: "og:type", content: "website" },
+       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ExperiencePage,
@@ -66,6 +68,7 @@ function ExperiencePage() {
               key={item.degree}
               className="reveal card-elevated holo-border rounded-xl p-6"
               data-reveal
+              data-glow
               style={{ transitionDelay: `${i * 70}ms` }}
             >
               <p className="font-mono text-xs text-primary">{item.period}</p>
@@ -83,6 +86,7 @@ function ExperiencePage() {
               key={item}
               className="reveal card-elevated holo-border rounded-xl p-6 text-sm leading-relaxed text-muted-foreground"
               data-reveal
+              data-glow
               style={{ transitionDelay: `${i * 70}ms` }}
             >
               {item}

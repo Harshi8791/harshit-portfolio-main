@@ -16,6 +16,7 @@ import { ContentProvider } from "@/lib/portfolio-store";
 import { AdminPanel } from "@/components/admin-panel";
 import { AiAssistant } from "@/components/ai-assistant";
 import { SiteLoader } from "@/components/site-loader";
+import { FxLayer } from "@/components/fx-layer";
 
 function NotFoundComponent() {
   return (
@@ -124,6 +125,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ContentProvider>
       <SiteLoader />
+      <FxLayer />
       <div className="ambient-field" aria-hidden />
       <div className="beam-sweep" aria-hidden />
       <div className="scanlines" aria-hidden />
