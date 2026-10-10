@@ -1,4 +1,4 @@
-import { knowledgeChunks, type KnowledgeChunk } from "@/lib/knowledge-base";
+import { knowledgeChunks, type KnowledgeChunk } from "@/lib/ai/knowledge/chunks";
 
 const STOP = new Set(
   "a an the is are was were be to of in on for and or with your you me my i do does did what who how why when where which tell about have has can kya hai ho ke ki ka me mein aap aapka apne".split(" "),

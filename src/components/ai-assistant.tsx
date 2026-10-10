@@ -4,45 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Moon, Send, Sun, Trash2, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useContent, useContentStore } from "@/lib/portfolio-store";
+import { buildResumeContext } from "@/lib/ai/context/resume-context";
 import aiMark from "@/assets/ai-twin-mark.png";
-
-import type { Content } from "@/lib/portfolio-store";
-
-function buildResumeContext(c: Content): string {
-  const p = c.profile;
-  return [
-    `Name: ${p.name}`,
-    `Role: ${p.role}`,
-    `Tagline: ${p.tagline}`,
-    `Location: ${p.location}`,
-    `Email: ${p.email}`,
-    `Phone: ${p.phone}`,
-    `LinkedIn: ${p.linkedin}`,
-    `GitHub: ${p.github}`,
-    `Objective: ${p.objective}`,
-    "",
-    "SKILLS:",
-    ...c.skillGroups.map((g) => `- ${g.title} (${g.note}): ${g.items.join(", ")}`),
-    "",
-    "PROJECTS:",
-    ...c.projects.map(
-      (pr) =>
-        `- ${pr.name} [${pr.kind}] — ${pr.summary} | Highlights: ${pr.points.join(" ")} | Stack: ${pr.stack.join(", ")}`,
-    ),
-    "",
-    "EXPERIENCE:",
-    ...c.experience.map((e) => `- ${e.role} @ ${e.org} (${e.period}): ${e.points.join(" ")}`),
-    "",
-    "EDUCATION:",
-    ...c.education.map((e) => `- ${e.degree}, ${e.school} (${e.period})`),
-    "",
-    "ACHIEVEMENTS:",
-    ...c.achievements.map((a) => `- ${a}`),
-    "",
-    "KEY METRICS:",
-    ...c.stats.map((s) => `- ${s.value} ${s.label}`),
-  ].join("\n");
-}
 
 function messageText(message: UIMessage): string {
   return message.parts
