@@ -53,8 +53,8 @@ function messageText(message: UIMessage): string {
 
 const SUGGESTIONS = [
   "What GenAI projects have you built?",
-  "Walk me through your experience.",
-  "Why should we hire you?",
+  "What are your strengths and weaknesses?",
+  "Where do you see yourself in 5 years?",
 ];
 
 export function AiAssistant() {

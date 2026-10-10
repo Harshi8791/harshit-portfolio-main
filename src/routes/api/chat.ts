@@ -1,4 +1,5 @@
 import { resolveChatModel } from "@/lib/ai-gateway.server";
+import { retrieve } from "@/lib/rag.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 
@@ -15,22 +16,38 @@ export const Route = createFileRoute("/api/chat")({
         const model = resolveChatModel();
         if (!model) return new Response("No AI API key configured", { status: 500 });
 
-        const resume = typeof body.resume === "string" ? body.resume : "";
+        const resume = typeof body.resume === "string" ? body.resume.slice(0, 20000) : "";
+        const uiMessages = body.messages as UIMessage[];
+
+        // RAG: query = last two user turns (so follow-ups keep context).
+        const userTexts = uiMessages
+          .filter((m) => m.role === "user")
+          .map((m) => m.parts.map((p) => (p.type === "text" ? p.text : "")).join(" "));
+        const query = userTexts.slice(-2).join(" ");
+        const live = resume
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => l.length > 20)
+          .map((text, i) => ({ id: `live-${i}`, source: "Portfolio site", text }));
+        const hits = retrieve(query, live, 6);
+        const context = hits.map((h, i) => `[${i + 1}] (${h.source}) ${h.text}`).join("\n");
 
         const result = streamText({
           model,
-          system: `You are an AI assistant that represents the job candidate described below. You speak on his behalf in first person ("I"), as if a recruiter or hiring manager is interviewing him.
+          system: `You are an AI assistant that represents the job candidate Harshit Chandola. You speak on his behalf in first person ("I"), as if a recruiter or hiring manager is interviewing him.
 
 Rules:
-1. Answer ONLY using the candidate information provided. Never invent employers, dates, degrees, or skills.
-2. If the answer is not in the information, say: "I don't have that detail on my profile — feel free to email me and I'll share more."
+1. Answer ONLY using the RETRIEVED CONTEXT below. Never invent employers, dates, degrees, or skills.
+2. If the answer is not in the context, say: "I don't have that detail on my profile — feel free to email me at hofficial996@gmail.com and I'll share more."
 3. Be professional, concise (2-5 sentences unless asked for detail), and confident but never boastful.
-4. Highlight relevant projects, skills and internships when they support the answer.
-5. Reply in the same language the recruiter uses (English or Hinglish).
-6. Use light markdown (bold, short bullet lists) when it helps readability.
+4. For strengths, weaknesses, goals and "why AI" questions, answer naturally in first person using the context — like a real interview answer.
+5. Share family/personal details only when directly asked.
+6. Reply in the same language the recruiter uses (English or Hinglish).
+7. Use light markdown (bold, short bullet lists) when it helps readability. Do not mention "context" or citation numbers.
 
-CANDIDATE INFORMATION:
-${resume}`,
+RETRIEVED CONTEXT:
+${context}`,
+
           messages: await convertToModelMessages(body.messages as UIMessage[]),
         });
 
