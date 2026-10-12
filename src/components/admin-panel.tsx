@@ -686,10 +686,14 @@ export function AdminPanel() {
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-primary/15 pt-5">
               <p className="font-mono text-[11px] text-muted-foreground">
-                {saved ? (
-                  <span className="text-primary">● Changes saved on this device</span>
+                {syncState === "saving" || saved ? (
+                  <span className="text-accent">● Publishing changes…</span>
+                ) : syncState === "saved" ? (
+                  <span className="text-primary">● Live for everyone</span>
+                ) : syncState === "error" ? (
+                  <span className="text-destructive">● Save failed — try again</span>
                 ) : (
-                  "Every change is saved automatically on this device"
+                  "Changes go live for every visitor automatically"
                 )}
               </p>
               <div className="flex gap-2">
