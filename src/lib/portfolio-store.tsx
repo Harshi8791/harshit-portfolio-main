@@ -4,9 +4,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { getSiteContent, saveSiteContent } from "@/lib/site-content.functions";
 import {
   achievements as defaultAchievements,
   education as defaultEducation,
@@ -70,10 +72,14 @@ export const THEMES = [
 export type ThemeId = (typeof THEMES)[number]["id"];
 export type ModeId = "dark" | "light";
 
+export type SyncState = "idle" | "saving" | "saved" | "error";
+
 type Ctx = {
   content: Content;
   setContent: (updater: (prev: Content) => Content) => void;
   reset: () => void;
+  setAdminCode: (code: string | null) => void;
+  syncState: SyncState;
   theme: ThemeId;
   setTheme: (id: ThemeId) => void;
   mode: ModeId;
@@ -92,14 +98,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeId>("cyber");
   const [mode, setModeState] = useState<ModeId>("dark");
 
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setContentState({ ...defaultContent, ...(JSON.parse(raw) as Partial<Content>) });
-    } catch {
-      /* ignore corrupt storage */
-    }
-  }, []);
 
   useEffect(() => {
     const saved = window.localStorage.getItem(THEME_KEY) as ThemeId | null;
