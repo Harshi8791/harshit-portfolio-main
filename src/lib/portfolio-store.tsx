@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { supabase } from "@/lib/supabase";
 import {
   achievements as defaultAchievements,
   education as defaultEducation,
@@ -93,12 +94,46 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<ModeId>("dark");
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setContentState({ ...defaultContent, ...(JSON.parse(raw) as Partial<Content>) });
-    } catch {
-      /* ignore corrupt storage */
+    let active = true;
+
+    async function loadContent() {
+      if (supabase) {
+        const { data } = await supabase
+          .from("portfolio_content")
+          .select("content")
+          .eq("id", "default")
+          .maybeSingle();
+
+        if (active && data?.content) {
+          setContentState({ ...defaultContent, ...(data.content as Partial<Content>) });
+          return;
+        }
+      }
+
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (active && raw) setContentState({ ...defaultContent, ...(JSON.parse(raw) as Partial<Content>) });
+      } catch {
+        /* ignore corrupt storage */
+      }
     }
+
+    void loadContent();
+
+    const channel = supabase?.channel("portfolio-content-live").on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "portfolio_content", filter: "id=eq.default" },
+      (payload) => {
+        if (active && payload.new && typeof payload.new.content === "object") {
+          setContentState({ ...defaultContent, ...(payload.new.content as Partial<Content>) });
+        }
+      },
+    ).subscribe();
+
+    return () => {
+      active = false;
+      if (channel) void supabase?.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -154,6 +189,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const setContent = useCallback((updater: (prev: Content) => Content) => {
     setContentState((prev) => {
       const next = updater(prev);
+      void supabase?.from("portfolio_content").upsert(
+        { id: "default", content: next, updated_at: new Date().toISOString() },
+        { onConflict: "id" },
+      );
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       } catch {
@@ -164,12 +203,16 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const reset = useCallback(() => {
+    setContentState(defaultContent);
+    void supabase?.from("portfolio_content").upsert(
+      { id: "default", content: defaultContent, updated_at: new Date().toISOString() },
+      { onConflict: "id" },
+    );
     try {
       window.localStorage.removeItem(STORAGE_KEY);
     } catch {
       /* ignore */
     }
-    setContentState(defaultContent);
   }, []);
 
   const value = useMemo(
