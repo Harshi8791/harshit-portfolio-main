@@ -203,6 +203,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     () => ({
       content,
       setContent,
+      setAdminCode,
+      syncState,
       reset,
       theme,
       setTheme,
@@ -213,7 +215,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       openAdmin: () => setAdminOpen(true),
       closeAdmin: () => setAdminOpen(false),
     }),
-    [content, setContent, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
+    [content, setContent, setAdminCode, syncState, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { THEMES, useContentStore, type Content } from "@/lib/portfolio-store";
 
-const ACCESS_CODE = "harshit";
+import { verifyAdminCode } from "@/lib/site-content.functions";
 
 const TABS = [
   "Profile",
@@ -154,7 +154,8 @@ function ListField({
 /* ---------- panel ---------- */
 
 export function AdminPanel() {
-  const { content, setContent, reset, theme, setTheme, adminOpen, closeAdmin } = useContentStore();
+  const { content, setContent, reset, theme, setTheme, adminOpen, closeAdmin, setAdminCode, syncState } =
+    useContentStore();
   const [tab, setTab] = useState<Tab>("Profile");
   const [unlocked, setUnlocked] = useState(false);
   const [code, setCode] = useState("");
@@ -198,10 +199,17 @@ export function AdminPanel() {
         {!unlocked ? (
           <form
             className="mt-10 max-w-sm space-y-4"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              if (code.trim().toLowerCase() === ACCESS_CODE) setUnlocked(true);
-              else setError(true);
+              try {
+                const { ok } = await verifyAdminCode({ data: { code } });
+                if (ok) {
+                  setAdminCode(code);
+                  setUnlocked(true);
+                } else setError(true);
+              } catch {
+                setError(true);
+              }
             }}
           >
             <Field label="Access code" value={code} onChange={(v) => (setCode(v), setError(false))} />
