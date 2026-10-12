@@ -23,7 +23,7 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ()
     },
   });
   const { data } = await client.from("site_content").select("content").eq("id", ROW_ID).maybeSingle();
-  return { content: (data?.content ?? null) as Record<string, unknown> | null };
+  return { json: data?.content ? JSON.stringify(data.content) : null };
 });
 
 export const verifyAdminCode = createServerFn({ method: "POST" })
@@ -32,18 +32,18 @@ export const verifyAdminCode = createServerFn({ method: "POST" })
 
 export const saveSiteContent = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ code: z.string().max(200), content: z.record(z.string(), z.unknown()).nullable() }).parse(d),
+    z.object({ code: z.string().max(200), json: z.string().max(500000).nullable() }).parse(d),
   )
   .handler(async ({ data }) => {
     if (!checkCode(data.code)) throw new Error("Access denied");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (data.content === null) {
+    if (data.json === null) {
       await supabaseAdmin.from("site_content").delete().eq("id", ROW_ID);
       return { ok: true };
     }
     const { error } = await supabaseAdmin
       .from("site_content")
-      .upsert({ id: ROW_ID, content: data.content as never, updated_at: new Date().toISOString() });
+      .upsert({ id: ROW_ID, content: JSON.parse(data.json), updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

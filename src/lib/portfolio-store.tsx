@@ -152,8 +152,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   // Load the published content from the cloud so every visitor sees admin edits.
   useEffect(() => {
     getSiteContent()
-      .then(({ content: remote }) => {
-        if (remote) setContentState({ ...defaultContent, ...(remote as Partial<Content>) });
+      .then(({ json }) => {
+        if (json) setContentState({ ...defaultContent, ...(JSON.parse(json) as Partial<Content>) });
       })
       .catch(() => {});
   }, []);
@@ -168,7 +168,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     if (saveTimer.current) window.clearTimeout(saveTimer.current);
     setSyncState("saving");
     saveTimer.current = window.setTimeout(() => {
-      saveSiteContent({ data: { code, content: next as Record<string, unknown> | null } })
+      saveSiteContent({ data: { code, json: next ? JSON.stringify(next) : null } })
         .then(() => setSyncState("saved"))
         .catch(() => setSyncState("error"));
     }, 700);
