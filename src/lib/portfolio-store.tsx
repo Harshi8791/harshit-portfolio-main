@@ -4,9 +4,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { getSiteContent, saveSiteContent } from "@/lib/site-content.functions";
 import {
   achievements as defaultAchievements,
   education as defaultEducation,
@@ -70,10 +72,14 @@ export const THEMES = [
 export type ThemeId = (typeof THEMES)[number]["id"];
 export type ModeId = "dark" | "light";
 
+export type SyncState = "idle" | "saving" | "saved" | "error";
+
 type Ctx = {
   content: Content;
   setContent: (updater: (prev: Content) => Content) => void;
   reset: () => void;
+  setAdminCode: (code: string | null) => void;
+  syncState: SyncState;
   theme: ThemeId;
   setTheme: (id: ThemeId) => void;
   mode: ModeId;
@@ -92,14 +98,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeId>("cyber");
   const [mode, setModeState] = useState<ModeId>("dark");
 
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setContentState({ ...defaultContent, ...(JSON.parse(raw) as Partial<Content>) });
-    } catch {
-      /* ignore corrupt storage */
-    }
-  }, []);
 
   useEffect(() => {
     const saved = window.localStorage.getItem(THEME_KEY) as ThemeId | null;
@@ -151,17 +149,45 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
 
-  const setContent = useCallback((updater: (prev: Content) => Content) => {
-    setContentState((prev) => {
-      const next = updater(prev);
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        /* storage may be unavailable */
-      }
-      return next;
-    });
+  // Load the published content from the cloud so every visitor sees admin edits.
+  useEffect(() => {
+    getSiteContent()
+      .then(({ json }) => {
+        if (json) setContentState({ ...defaultContent, ...(JSON.parse(json) as Partial<Content>) });
+      })
+      .catch(() => {});
   }, []);
+
+  const adminCodeRef = useRef<string | null>(null);
+  const saveTimer = useRef<number | null>(null);
+  const [syncState, setSyncState] = useState<SyncState>("idle");
+
+  const pushRemote = useCallback((next: Content | null) => {
+    const code = adminCodeRef.current;
+    if (!code) return;
+    if (saveTimer.current) window.clearTimeout(saveTimer.current);
+    setSyncState("saving");
+    saveTimer.current = window.setTimeout(() => {
+      saveSiteContent({ data: { code, json: next ? JSON.stringify(next) : null } })
+        .then(() => setSyncState("saved"))
+        .catch(() => setSyncState("error"));
+    }, 700);
+  }, []);
+
+  const setAdminCode = useCallback((code: string | null) => {
+    adminCodeRef.current = code;
+  }, []);
+
+  const setContent = useCallback(
+    (updater: (prev: Content) => Content) => {
+      setContentState((prev) => {
+        const next = updater(prev);
+        pushRemote(next);
+        return next;
+      });
+    },
+    [pushRemote],
+  );
 
   const reset = useCallback(() => {
     try {
@@ -170,12 +196,15 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       /* ignore */
     }
     setContentState(defaultContent);
-  }, []);
+    pushRemote(null);
+  }, [pushRemote]);
 
   const value = useMemo(
     () => ({
       content,
       setContent,
+      setAdminCode,
+      syncState,
       reset,
       theme,
       setTheme,
@@ -186,7 +215,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       openAdmin: () => setAdminOpen(true),
       closeAdmin: () => setAdminOpen(false),
     }),
-    [content, setContent, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
+    [content, setContent, setAdminCode, syncState, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;

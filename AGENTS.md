@@ -9,3 +9,5 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 - AI twin code lives in src/lib/ai/ split by concern (providers, knowledge, retrieval, context, prompts); keeps RAG pieces independently swappable.
+
+- Editable portfolio content is stored as one JSON row in the cloud `site_content` table; writes go through a server function that checks the admin passcode, so edits reach every visitor.
