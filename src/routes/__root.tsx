@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNav, SiteFooter } from "@/components/site-chrome";
 import { ContentProvider } from "@/lib/portfolio-store";
+import { getSiteContent } from "@/lib/site-content.functions";
 import { AdminPanel } from "@/components/admin-panel";
 import { AiAssistant } from "@/components/ai-assistant";
 import { SiteLoader } from "@/components/site-loader";
@@ -99,6 +100,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
+  loader: () => getSiteContent().catch(() => ({ json: null })),
+  staleTime: 0,
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -121,10 +124,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { json } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ContentProvider>
+      <ContentProvider initialJson={json}>
       <SiteLoader />
       <FxLayer />
       <div className="ambient-field" aria-hidden />

@@ -80,6 +80,7 @@ type Ctx = {
   reset: () => void;
   setAdminCode: (code: string | null) => void;
   syncState: SyncState;
+  flushSave: () => Promise<void>;
   theme: ThemeId;
   setTheme: (id: ThemeId) => void;
   mode: ModeId;
@@ -92,8 +93,24 @@ type Ctx = {
 
 const ContentContext = createContext<Ctx | null>(null);
 
-export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContentState] = useState<Content>(defaultContent);
+function parseContent(json: string | null | undefined): Content {
+  if (!json) return defaultContent;
+  try {
+    return { ...defaultContent, ...(JSON.parse(json) as Partial<Content>) };
+  } catch {
+    return defaultContent;
+  }
+}
+
+export function ContentProvider({
+  children,
+  initialJson,
+}: {
+  children: ReactNode;
+  initialJson?: string | null;
+}) {
+  const [content, setContentState] = useState<Content>(() => parseContent(initialJson));
+  const dirtyRef = useRef(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [theme, setThemeState] = useState<ThemeId>("cyber");
   const [mode, setModeState] = useState<ModeId>("dark");
@@ -149,11 +166,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
 
-  // Load the published content from the cloud so every visitor sees admin edits.
+  // Refresh from the cloud after hydration so a cached page never shows stale content.
+  // Skipped once the admin has started editing, so it can't overwrite unsaved work.
   useEffect(() => {
     getSiteContent()
       .then(({ json }) => {
-        if (json) setContentState({ ...defaultContent, ...(JSON.parse(json) as Partial<Content>) });
+        if (!dirtyRef.current && json) setContentState(parseContent(json));
       })
       .catch(() => {});
   }, []);
@@ -162,17 +180,52 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const saveTimer = useRef<number | null>(null);
   const [syncState, setSyncState] = useState<SyncState>("idle");
 
-  const pushRemote = useCallback((next: Content | null) => {
+  const pendingRef = useRef<{ next: Content | null } | null>(null);
+
+  const flushSave = useCallback(async () => {
     const code = adminCodeRef.current;
-    if (!code) return;
-    if (saveTimer.current) window.clearTimeout(saveTimer.current);
-    setSyncState("saving");
-    saveTimer.current = window.setTimeout(() => {
-      saveSiteContent({ data: { code, json: next ? JSON.stringify(next) : null } })
-        .then(() => setSyncState("saved"))
-        .catch(() => setSyncState("error"));
-    }, 700);
+    const pending = pendingRef.current;
+    if (saveTimer.current) {
+      window.clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    }
+    if (!code || !pending) return;
+    pendingRef.current = null;
+    try {
+      await saveSiteContent({
+        data: { code, json: pending.next ? JSON.stringify(pending.next) : null },
+      });
+      if (!pendingRef.current) setSyncState("saved");
+    } catch {
+      pendingRef.current = pendingRef.current ?? pending;
+      setSyncState("error");
+    }
   }, []);
+
+  const pushRemote = useCallback(
+    (next: Content | null) => {
+      if (!adminCodeRef.current) return;
+      dirtyRef.current = true;
+      pendingRef.current = { next };
+      setSyncState("saving");
+      if (saveTimer.current) window.clearTimeout(saveTimer.current);
+      saveTimer.current = window.setTimeout(() => void flushSave(), 600);
+    },
+    [flushSave],
+  );
+
+  // Don't lose the last edit if the tab is closed right after typing.
+  useEffect(() => {
+    const onHide = () => {
+      if (pendingRef.current) void flushSave();
+    };
+    window.addEventListener("pagehide", onHide);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("pagehide", onHide);
+      document.removeEventListener("visibilitychange", onHide);
+    };
+  }, [flushSave]);
 
   const setAdminCode = useCallback((code: string | null) => {
     adminCodeRef.current = code;
@@ -205,6 +258,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       setContent,
       setAdminCode,
       syncState,
+      flushSave,
       reset,
       theme,
       setTheme,
@@ -213,9 +267,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       toggleMode,
       adminOpen,
       openAdmin: () => setAdminOpen(true),
-      closeAdmin: () => setAdminOpen(false),
+      closeAdmin: () => {
+        void flushSave();
+        setAdminOpen(false);
+      },
     }),
-    [content, setContent, setAdminCode, syncState, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
+    [content, setContent, setAdminCode, syncState, flushSave, reset, theme, setTheme, mode, setMode, toggleMode, adminOpen],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
